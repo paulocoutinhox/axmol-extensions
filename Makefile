@@ -2,8 +2,8 @@
 .DEFAULT_GOAL := help
 
 ROOT_DIR=${PWD}
-
 PROJ=axmol-extensions
+GITHUB_REPO=paulocoutinhox/axmol-extensions
 
 help:
 	@echo "Type: make [rule]. Available options are:"
@@ -15,10 +15,12 @@ help:
 	@echo "- build-ios"
 	@echo "- build-tvos"
 	@echo "- build-macos"
+	@echo "- build-wasm"
 	@echo ""
 	@echo "- deploy-ios"
 	@echo "- deploy-tvos"
 	@echo "- deploy-android"
+	@echo "- deploy-wasm"
 	@echo ""
 
 format:
@@ -40,6 +42,12 @@ build-tvos:
 build-macos:
 	rm -rf build_arm64/
 	axmol build -c
+
+build-wasm:
+	rm -rf build_wasm/
+	axmol build -p wasm
+	cd build_wasm && make
+	cp build_wasm/bin/axmol-extensions/axmol-extensions.html build_wasm/bin/axmol-extensions/index.html
 
 deploy-ios:
 	rm -rf build_ios_arm64/
@@ -76,3 +84,13 @@ deploy-tvos:
 deploy-android:
 	cd proj.android && ./gradlew clean bundleRelease
 	echo "The bundle is here: proj.android/app/build/outputs/bundle/release/${PROJ}-release.aab"
+
+deploy-wasm:
+	cd build_wasm/bin/axmol-extensions && \
+	rm -rf .git && \
+	git init . && \
+	git branch -M gh-pages && \
+	git add --all && \
+	git commit -am "published new version" && \
+	git push "git@github.com:$(GITHUB_REPO).git" gh-pages --force && \
+	rm -rf .git

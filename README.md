@@ -2,6 +2,9 @@
 
 This repository has some extensions for [Axmol Game Engine](https://github.com/axmolengine/axmol).
 
+Demo using WebAssembly:
+https://paulocoutinhox.github.io/axmol-extensions/
+
 ## Extensions
 
 - Splash
