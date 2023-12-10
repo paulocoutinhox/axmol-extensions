@@ -87,6 +87,7 @@ deploy-android:
 
 deploy-wasm:
 	cd build_wasm/bin/axmol-extensions && \
+	echo "/*\n  Cross-Origin-Embedder-Policy: require-corp\n  Cross-Origin-Opener-Policy: same-origin" > _headers && \
 	rm -rf .git && \
 	git init . && \
 	git branch -M gh-pages && \
