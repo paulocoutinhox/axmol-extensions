@@ -8,6 +8,11 @@ This repository has some extensions for [Axmol Game Engine](https://github.com/a
 - Layer Pan Zoom
 - Infinite Scroll
 
+## Code of Conduct
+
+- All code need be formatted with clang using `make format`.
+- All code need be distributed with this license `MIT`.
+
 ## Utilities
 
 General:
@@ -26,3 +31,9 @@ Deploy:
 - Deploy for iOS: `make deploy-ios`
 - Deploy for tvOS: `make deploy-tvos`
 - Deploy for Android: `make deploy-android`
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2023, Paulo Coutinho
