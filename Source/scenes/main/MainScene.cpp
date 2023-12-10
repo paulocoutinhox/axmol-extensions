@@ -2,6 +2,7 @@
 #include "app/Global.h"
 #include "ui/UIButton.h"
 
+#include "scenes/infinite-scroll/InfiniteScrollScene.h"
 #include "scenes/layer-pan-zoom/LayerPanZoomScene.h"
 #include "scenes/splash/SplashScene.h"
 
@@ -9,6 +10,7 @@ enum ListItem
 {
     Splash = 0,
     LayerPanZoom = 1,
+    InfiniteScroll = 2,
 };
 
 bool MainScene::init()
@@ -95,6 +97,9 @@ void MainScene::setupListData(ax::ui::Layout *defaultItem)
 
     // layer pan zoom
     addListItem(ListItem::LayerPanZoom, "Layer Pan Zoom", defaultItem);
+
+    // infinite scroll
+    addListItem(ListItem::InfiniteScroll, "Infinite Scroll", defaultItem);
 }
 
 void MainScene::onItemSelected(int tag)
@@ -110,6 +115,10 @@ void MainScene::onItemSelected(int tag)
     case ListItem::LayerPanZoom:
         // layer pan zoom
         scene = utils::createInstance<LayerPanZoomScene>();
+        break;
+    case ListItem::InfiniteScroll:
+        // infinite scroll
+        scene = utils::createInstance<InfiniteScrollScene>();
         break;
     }
 

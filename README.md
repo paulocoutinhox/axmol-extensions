@@ -5,7 +5,8 @@ This repository has some extensions for [Axmol Game Engine](https://github.com/a
 ## Extensions
 
 - Splash
-- LayerPanZoom
+- Layer Pan Zoom
+- Infinite Scroll
 
 ## Utilities
 
