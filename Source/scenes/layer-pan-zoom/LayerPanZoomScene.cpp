@@ -2,6 +2,9 @@
 #include "scenes/main/MainScene.h"
 #include "ui/UIButton.h"
 
+#include "STCameraManager.h"
+#include "STLayerPanZoom.h"
+
 bool LayerPanZoomScene::init()
 {
     // super init first
@@ -9,6 +12,9 @@ bool LayerPanZoomScene::init()
     {
         return false;
     }
+
+    // custom
+    setupCustom();
 
     // physics
     setupPhysics();
@@ -28,10 +34,38 @@ bool LayerPanZoomScene::init()
     return true;
 }
 
+void LayerPanZoomScene::setupCustom()
+{
+    panZoomLayer = STLayerPanZoom::create();
+    panZoomLayer->setPosition(Vec2::ZERO);
+    panZoomLayer->setAnchorPoint(Vec2::ZERO);
+    panZoomLayer->setupInput();
+
+    panZoomLayer->setMinScale(.0625f);
+    panZoomLayer->setMaxScale(10.f);
+    panZoomLayer->setZoomDisabled(false);
+    panZoomLayer->setZoomLevels({
+        .0625f,
+        .125f,
+        .25f,
+        .5f,
+        .75f,
+        1.f,
+        1.5f,
+        2.f,
+        5.f,
+        10.f,
+    });
+
+    addChild(panZoomLayer);
+
+    STCameraManager::get()->setupWithPanZoomLayer(panZoomLayer);
+}
+
 void LayerPanZoomScene::setupPlayer()
 {
     playerLayer = Layer::create();
-    addChild(playerLayer);
+    panZoomLayer->addChild(playerLayer, 200);
 
     player = Sprite::create("HelloWorld.png");
 
@@ -46,16 +80,20 @@ void LayerPanZoomScene::setupPlayer()
 
     player->setPosition(Vec2(300, 300));
     player->getPhysicsBody()->setVelocity(Vec2(100.0f, 100.0f));
+
+    // camera can follow the player
+    // panZoomLayer->runAction(Follow::create(player));
 }
 
 void LayerPanZoomScene::setupMap()
 {
     // map
     mapLayer = Layer::create();
+    panZoomLayer->addChild(mapLayer, 100);
+
     auto map = FastTMXTiledMap::create("maps/map1/map.tmx");
     map->setScale(1.0f);
-    mapLayer->addChild(map, 0, 0);
-    addChild(mapLayer);
+    mapLayer->addChild(map);
 
     // collision layer
     auto collisionLayer = map->getLayer("Collision Layer");
@@ -90,7 +128,8 @@ void LayerPanZoomScene::setupPhysics()
     getPhysicsWorld()->setSubsteps(4);
 
 #if _AX_DEBUG
-    getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    // enable to see physics debug draw
+    // getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 #endif
 }
 
