@@ -29,12 +29,18 @@ Build:
 - Build for iOS: `make build-ios`
 - Build for tvOS: `make build-tvos`
 - Build for macOS: `make build-macos`
+- Build for wasm: `make build-wasm`
 
 Deploy:
 
 - Deploy for iOS: `make deploy-ios`
 - Deploy for tvOS: `make deploy-tvos`
 - Deploy for Android: `make deploy-android`
+- Deploy for wasm: `make deploy-wasm`
+
+Server:
+
+- Server for wasm demo: `python3 server.py`
 
 ## License
 
