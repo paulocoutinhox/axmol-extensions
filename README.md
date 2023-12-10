@@ -12,6 +12,7 @@ This repository has some extensions for [Axmol Game Engine](https://github.com/a
 
 - All code need be formatted with clang using `make format`.
 - All code need be distributed with this license `MIT`.
+- All extensions need have a sample scene using it and an item in startup menu.
 
 ## Utilities
 
