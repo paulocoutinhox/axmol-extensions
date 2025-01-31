@@ -5,9 +5,11 @@
 #include "STCameraManager.h"
 #include "STLayerPanZoom.h"
 
-bool LayerPanZoomScene::init() {
+bool LayerPanZoomScene::init()
+{
     // super init first
-    if (!Scene::initWithPhysics()) {
+    if (!Scene::initWithPhysics())
+    {
         return false;
     }
 
@@ -32,7 +34,8 @@ bool LayerPanZoomScene::init() {
     return true;
 }
 
-void LayerPanZoomScene::setupCustom() {
+void LayerPanZoomScene::setupCustom()
+{
     panZoomLayer = STLayerPanZoom::create();
     panZoomLayer->setPosition(Vec2::ZERO);
     panZoomLayer->setAnchorPoint(Vec2::ZERO);
@@ -59,7 +62,8 @@ void LayerPanZoomScene::setupCustom() {
     STCameraManager::get()->setupWithPanZoomLayer(panZoomLayer);
 }
 
-void LayerPanZoomScene::setupPlayer() {
+void LayerPanZoomScene::setupPlayer()
+{
     playerLayer = Layer::create();
     panZoomLayer->addChild(playerLayer, 200);
 
@@ -81,7 +85,8 @@ void LayerPanZoomScene::setupPlayer() {
     // panZoomLayer->runAction(Follow::create(player));
 }
 
-void LayerPanZoomScene::setupMap() {
+void LayerPanZoomScene::setupMap()
+{
     // map
     mapLayer = Layer::create();
     panZoomLayer->addChild(mapLayer, 100);
@@ -93,14 +98,18 @@ void LayerPanZoomScene::setupMap() {
     // collision layer
     auto collisionLayer = map->getLayer("Collision Layer");
 
-    if (collisionLayer) {
+    if (collisionLayer)
+    {
         collisionLayer->setVisible(false);
 
-        for (int y = 0; y < collisionLayer->getLayerSize().height; y++) {
-            for (int x = 0; x < collisionLayer->getLayerSize().width; x++) {
+        for (int y = 0; y < collisionLayer->getLayerSize().height; y++)
+        {
+            for (int x = 0; x < collisionLayer->getLayerSize().width; x++)
+            {
                 auto tileSprite = collisionLayer->getTileAt(Vec2(x, y));
 
-                if (tileSprite) {
+                if (tileSprite)
+                {
                     auto physicsBody =
                         PhysicsBody::createBox(tileSprite->getContentSize(), PhysicsMaterial(1.0f, 0.1f, 0.0f));
                     physicsBody->setDynamic(false);
@@ -113,7 +122,8 @@ void LayerPanZoomScene::setupMap() {
     }
 }
 
-void LayerPanZoomScene::setupPhysics() {
+void LayerPanZoomScene::setupPhysics()
+{
     getPhysicsWorld()->setGravity(Vec2(0, 0));
     getPhysicsWorld()->setSlopBias(0, 0);
     getPhysicsWorld()->setSubsteps(4);
@@ -124,11 +134,13 @@ void LayerPanZoomScene::setupPhysics() {
 #endif
 }
 
-void LayerPanZoomScene::update(float delta) {
+void LayerPanZoomScene::update(float delta)
+{
     //
 }
 
-void LayerPanZoomScene::setupUI() {
+void LayerPanZoomScene::setupUI()
+{
     // layer
     uiLayer = Layer::create();
     addChild(uiLayer, 1000);

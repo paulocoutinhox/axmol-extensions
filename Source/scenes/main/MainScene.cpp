@@ -7,16 +7,19 @@
 #include "scenes/splash/SplashScene.h"
 #include "scenes/ui/SimpleCheckBoxScene.h"
 
-enum ListItem {
-    Splash = 0,
-    LayerPanZoom = 1,
+enum ListItem
+{
+    Splash         = 0,
+    LayerPanZoom   = 1,
     InfiniteScroll = 2,
     SimpleCheckBox = 3,
 };
 
-bool MainScene::init() {
+bool MainScene::init()
+{
     // super init first
-    if (!Scene::init()) {
+    if (!Scene::init())
+    {
         return false;
     }
 
@@ -29,7 +32,8 @@ bool MainScene::init() {
     return true;
 }
 
-void MainScene::setupUI() {
+void MainScene::setupUI()
+{
     // create list view
     listView = ax::ui::ListView::create();
     listView->setDirection(ui::ScrollView::Direction::VERTICAL);
@@ -44,11 +48,11 @@ void MainScene::setupUI() {
     addChild(listView);
 
     // create model
-    ax::ui::Button *defaultButton = ax::ui::Button::create();
+    ax::ui::Button* defaultButton = ax::ui::Button::create();
     defaultButton->setName("TitleButton");
     defaultButton->setTitleFontSize(30);
 
-    ax::ui::Layout *defaultItem = ax::ui::Layout::create();
+    ax::ui::Layout* defaultItem = ax::ui::Layout::create();
     defaultItem->setTouchEnabled(true);
     defaultItem->setContentSize(Size(Global::getInstance().winSize.width, Global::getInstance().winSize.height * 0.1f));
     defaultButton->setPosition(defaultItem->getContentSize() / 2);
@@ -79,15 +83,17 @@ void MainScene::setupUI() {
     listView->jumpToTop();
 }
 
-void MainScene::addListItem(int tag, const std::string &text, ax::ui::Layout *defaultItem) {
-    ax::ui::Widget *item = defaultItem->clone();
+void MainScene::addListItem(int tag, const std::string& text, ax::ui::Layout* defaultItem)
+{
+    ax::ui::Widget* item = defaultItem->clone();
     item->setTag(tag);
-    ax::ui::Button *btn = (ax::ui::Button *)item->getChildByName("TitleButton");
+    ax::ui::Button* btn = (ax::ui::Button*)item->getChildByName("TitleButton");
     btn->setTitleText(text);
     listView->pushBackCustomItem(item);
 }
 
-void MainScene::setupListData(ax::ui::Layout *defaultItem) {
+void MainScene::setupListData(ax::ui::Layout* defaultItem)
+{
     // splash
     addListItem(ListItem::Splash, "Splash", defaultItem);
 
@@ -101,10 +107,12 @@ void MainScene::setupListData(ax::ui::Layout *defaultItem) {
     addListItem(ListItem::SimpleCheckBox, "Simple Check Box", defaultItem);
 }
 
-void MainScene::onItemSelected(int tag) {
-    Scene *scene;
+void MainScene::onItemSelected(int tag)
+{
+    Scene* scene;
 
-    switch (tag) {
+    switch (tag)
+    {
     case ListItem::Splash:
         // splash
         scene = utils::createInstance<SplashScene>();
@@ -123,16 +131,20 @@ void MainScene::onItemSelected(int tag) {
         break;
     }
 
-    if (scene) {
+    if (scene)
+    {
         Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene, Color3B(0, 0, 0)));
     }
 }
 
-void MainScene::selectedItemEvent(Object *sender, ax::ui::ListView::EventType type) {
-    switch (type) {
-    case ax::ui::ListView::EventType::ON_SELECTED_ITEM_END: {
-        ax::ui::ListView *listView = static_cast<ax::ui::ListView *>(sender);
-        auto tag = listView->getItem(listView->getCurSelectedIndex())->getTag();
+void MainScene::selectedItemEvent(Object* sender, ax::ui::ListView::EventType type)
+{
+    switch (type)
+    {
+    case ax::ui::ListView::EventType::ON_SELECTED_ITEM_END:
+    {
+        ax::ui::ListView* listView = static_cast<ax::ui::ListView*>(sender);
+        auto tag                   = listView->getItem(listView->getCurSelectedIndex())->getTag();
         onItemSelected(tag);
         break;
     }
@@ -141,6 +153,7 @@ void MainScene::selectedItemEvent(Object *sender, ax::ui::ListView::EventType ty
     }
 }
 
-void MainScene::update(float delta) {
+void MainScene::update(float delta)
+{
     //
 }

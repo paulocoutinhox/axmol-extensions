@@ -7,19 +7,20 @@ USING_NS_AX;
 #include "STLayerPanZoom.h"
 #include "scenes/layer-pan-zoom/STLayerPanZoom.h"
 
-class LayerPanZoomScene : public Scene {
+class LayerPanZoomScene : public Scene
+{
 public:
     bool init() override;
     void update(float delta) override;
 
 private:
-    Layer *mapLayer;
-    Layer *playerLayer;
-    Layer *uiLayer;
+    Layer* mapLayer;
+    Layer* playerLayer;
+    Layer* uiLayer;
 
-    STLayerPanZoom *panZoomLayer;
+    STLayerPanZoom* panZoomLayer;
 
-    Sprite *player;
+    Sprite* player;
 
     void setupUI();
     void setupMap();
@@ -28,4 +29,4 @@ private:
     void setupCustom();
 };
 
-#endif // __LAYER_PAN_ZOOM_SCENE_H__
+#endif  // __LAYER_PAN_ZOOM_SCENE_H__

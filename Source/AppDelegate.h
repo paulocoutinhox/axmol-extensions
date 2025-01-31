@@ -9,7 +9,8 @@ USING_NS_AX;
 
 Private inheritance here hides part of interface from Director.
 */
-class AppDelegate : private Application {
+class AppDelegate : private Application
+{
 public:
     AppDelegate();
     virtual ~AppDelegate();
@@ -37,4 +38,4 @@ public:
     void applicationWillEnterForeground() override;
 };
 
-#endif // _APP_DELEGATE_H_
+#endif  // _APP_DELEGATE_H_
