@@ -13,8 +13,7 @@
 #define SCALE_LARGE 1.0f
 #define kCameraZoomInShip 1.0f
 
-typedef enum
-{
+typedef enum {
     /** Standard mode: swipe to scroll */
     kSTLayerPanZoomModeSheet,
     /** Frame mode (i.e. drag inside objects): hold finger at edge of the screen to the sroll in this direction */
@@ -22,8 +21,7 @@ typedef enum
 } STLayerPanZoomMode;
 
 // https://raw.github.com/gameslovin/cocos2dx_extension/master/Extensions/CCLayerPanZoom/CCLayerPanZoom.h
-typedef enum
-{
+typedef enum {
     kCCLayerPanZoomFrameEdgeNone,
     kCCLayerPanZoomFrameEdgeTop,
     kCCLayerPanZoomFrameEdgeBottom,
@@ -39,12 +37,13 @@ typedef enum
 class STLayerPanZoom;
 class GameLayer;
 
-class STLayerPanZoomDelegate
-{
+class STLayerPanZoomDelegate {
 public:
     virtual ~STLayerPanZoomDelegate();
 
-    virtual bool layerPanZoomClickedAtPoint(const ax::Vec2 &touchPosition, int touchCount, bool shortCircuited = false) = 0;
+    virtual bool layerPanZoomClickedAtPoint(const ax::Vec2 &touchPosition,
+                                            int touchCount,
+                                            bool shortCircuited = false) = 0;
     virtual bool layerPanZoomTouchBegan(STLayerPanZoom *layerPanZoom, const ax::Vec2 &touchPositionInLayer) = 0;
     virtual bool layerPanZoomTouchMoved(STLayerPanZoom *layerPanZoom, const ax::Vec2 &touchPositionInLayer) = 0;
     virtual bool layerPanZoomTouchEnded(STLayerPanZoom *layerPanZoom, const ax::Vec2 &touchPositionInLayer) = 0;
@@ -61,8 +60,7 @@ public:
 
 /** class STLayerPanZoom Class that represents the layer that can be scrolled
  * and zoomed with one or two fingers. */
-class STLayerPanZoom : public ax::Layer
-{
+class STLayerPanZoom : public ax::Layer {
 public:
     STLayerPanZoom();
     virtual ~STLayerPanZoom();
@@ -185,16 +183,14 @@ public:
     void setupMouseInput();
     void setupTouchInputInternal();
     void setupKeyboardInput();
-    void setZoomLevels(std::vector<float> zoomLevels)
-    {
+    void setZoomLevels(std::vector<float> zoomLevels) {
         AXLOG("enter");
         _zoomLevelsNew = zoomLevels;
 
         setMinScale(_zoomLevelsNew.front());
         setMaxScale(_zoomLevelsNew.back());
         AXLOG("before sorting [%f - %f]", _minScale, _maxScale);
-        for (auto zoom : _zoomLevelsNew)
-        {
+        for (auto zoom : _zoomLevelsNew) {
             AXLOG("zoom: %f", zoom);
         }
 
@@ -203,8 +199,7 @@ public:
         setMinScale(_zoomLevelsNew.front());
         setMaxScale(_zoomLevelsNew.back());
         AXLOG("after sorting [%f - %f]", _minScale, _maxScale);
-        for (auto zoom : _zoomLevelsNew)
-        {
+        for (auto zoom : _zoomLevelsNew) {
             AXLOG("zoom: %f", zoom);
         }
     }
@@ -234,7 +229,12 @@ public:
     // camera pan/zoom action (without Simulation Time, _timeScale affecting)
 
     void updateCameraAction(float dt);
-    void runCameraAction(float delay, float duration, const ax::Vec2 &newPos, float newScale, float easingRate, const std::function<void()> &callback = nullptr);
+    void runCameraAction(float delay,
+                         float duration,
+                         const ax::Vec2 &newPos,
+                         float newScale,
+                         float easingRate,
+                         const std::function<void()> &callback = nullptr);
 
     int _stage;
     float _targetDelay;

@@ -8,8 +8,7 @@ USING_NS_AX;
 
 #include "ui/UIListView.h"
 
-class MainScene : public Scene
-{
+class MainScene : public Scene {
 public:
     bool init() override;
     void update(float delta) override;
@@ -21,7 +20,8 @@ private:
     // total items count
     int totalCount = 10;
 
-    // how many items we actually spawn, these items will be reused and should be > (list view size / template size) + 2.
+    // how many items we actually spawn, these items will be reused and should be > (list view size / template size)
+    // + 2.
     int spawnCount = 0;
 
     // list item height
@@ -29,7 +29,7 @@ private:
 
     void setupUI();
     void setupListData(ax::ui::Layout *defaultItem);
-    void selectedItemEvent(Ref *sender, ax::ui::ListView::EventType type);
+    void selectedItemEvent(Object *sender, ax::ui::ListView::EventType type);
     void addListItem(int tag, const std::string &text, ax::ui::Layout *defaultItem);
     void onItemSelected(int tag);
 };

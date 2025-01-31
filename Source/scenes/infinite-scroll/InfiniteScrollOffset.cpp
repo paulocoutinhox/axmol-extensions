@@ -16,8 +16,7 @@ using namespace axmol;
 USING_NS_AX;
 
 // on "init" you need to initialize your instance
-bool InfiniteScrollOffset::init()
-{
+bool InfiniteScrollOffset::init() {
     if (!Layer::init())
         return false;
 
@@ -28,20 +27,17 @@ bool InfiniteScrollOffset::init()
     return true;
 }
 
-InfiniteScrollOffset *InfiniteScrollOffset::scrollWithNode(Node *node, Point r, Point p, Point s)
-{
+InfiniteScrollOffset *InfiniteScrollOffset::scrollWithNode(Node *node, Point r, Point p, Point s) {
     InfiniteScrollOffset *offset = (InfiniteScrollOffset *)InfiniteScrollOffset::create();
     return (InfiniteScrollOffset *)offset->initWithNode(node, r, p, s);
 }
 
-InfiniteScrollOffset *InfiniteScrollOffset::scrollWithNode(Node *node, Point r, Point p, Point s, Point v)
-{
+InfiniteScrollOffset *InfiniteScrollOffset::scrollWithNode(Node *node, Point r, Point p, Point s, Point v) {
     InfiniteScrollOffset *offset = (InfiniteScrollOffset *)InfiniteScrollOffset::create();
     return (InfiniteScrollOffset *)offset->initWithNode(node, r, p, s, v);
 }
 
-InfiniteScrollOffset *InfiniteScrollOffset::initWithNode(Node *node, Point r, Point p, Point s, Point v)
-{
+InfiniteScrollOffset *InfiniteScrollOffset::initWithNode(Node *node, Point r, Point p, Point s, Point v) {
     // if(!this) return false;
     this->setRatio(r);
     this->setScrollOffset(s);
@@ -53,7 +49,6 @@ InfiniteScrollOffset *InfiniteScrollOffset::initWithNode(Node *node, Point r, Po
     return this;
 }
 
-InfiniteScrollOffset *InfiniteScrollOffset::initWithNode(Node *node, Point r, Point p, Point s)
-{
+InfiniteScrollOffset *InfiniteScrollOffset::initWithNode(Node *node, Point r, Point p, Point s) {
     return this->initWithNode(node, r, p, p, Point(0, 0));
 }

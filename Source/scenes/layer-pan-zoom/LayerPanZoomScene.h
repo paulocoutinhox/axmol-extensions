@@ -7,8 +7,7 @@ USING_NS_AX;
 #include "STLayerPanZoom.h"
 #include "scenes/layer-pan-zoom/STLayerPanZoom.h"
 
-class LayerPanZoomScene : public Scene
-{
+class LayerPanZoomScene : public Scene {
 public:
     bool init() override;
     void update(float delta) override;

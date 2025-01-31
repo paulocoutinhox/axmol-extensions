@@ -6,8 +6,7 @@ USING_NS_AX;
 
 #include "InfiniteScrollNode.h"
 
-class InfiniteScrollScene : public Scene
-{
+class InfiniteScrollScene : public Scene {
 public:
     bool init() override;
     void update(float delta) override;

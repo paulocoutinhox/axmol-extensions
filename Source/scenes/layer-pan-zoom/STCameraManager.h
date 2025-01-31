@@ -10,8 +10,7 @@
 
 typedef std::function<void()> popCallback;
 
-class STCameraManager
-{
+class STCameraManager {
     // Singleton Stuff
 public:
     static STCameraManager *get();
@@ -42,8 +41,7 @@ public:
 
     /// reposition camera's center to a given world coord
     /// defaults: newScale = 0, dur = 0, delay = 0
-    void setViewpointCenter(
-        const ax::Vec2 &newWorldCoord, bool animated, float newScale = 0, float dur = 0, float delay = 0, const popCallback &callback = []() {});
+    void setViewpointCenter(const ax::Vec2 &newWorldCoord, bool animated, float newScale = 0, float dur = 0, float delay = 0, const popCallback &callback = []() {});
 
     /// reposition camera's center to a given world coord
     /// defaults: no animation (instant move), no change to zoom, dur = 0
@@ -59,8 +57,7 @@ public:
 
 private:
     // ax::ValueVector
-    struct CameraState
-    {
+    struct CameraState {
         ax::Vec2 worldCoord;
         float scale;
     };

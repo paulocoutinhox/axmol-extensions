@@ -15,8 +15,7 @@ USING_NS_AX;
 #define PTM_RATIO 32
 #endif
 
-class InfiniteScrollNode : public ax::Layer
-{
+class InfiniteScrollNode : public ax::Layer {
 public:
     virtual bool init();
     CREATE_FUNC(InfiniteScrollNode);
@@ -38,8 +37,19 @@ public:
     void addInfiniteScrollYWithZ(int z, Point ratio, Point pos, Sprite *firstObject, ...);
 
     void addInfiniteScrollWithObjects(const ax::Vector<Sprite *> &objects, int z, Point ratio, Point pos, Point dir);
-    void addInfiniteScrollWithObjects(const ax::Vector<Sprite *> &objects, int z, Point ratio, Point pos, Point dir, Point relVel);
-    void addInfiniteScrollWithObjects(const ax::Vector<Sprite *> &objects, int z, Point ratio, Point pos, Point dir, Point relVel, Point padding);
+    void addInfiniteScrollWithObjects(const ax::Vector<Sprite *> &objects,
+                                      int z,
+                                      Point ratio,
+                                      Point pos,
+                                      Point dir,
+                                      Point relVel);
+    void addInfiniteScrollWithObjects(const ax::Vector<Sprite *> &objects,
+                                      int z,
+                                      Point ratio,
+                                      Point pos,
+                                      Point dir,
+                                      Point relVel,
+                                      Point padding);
 };
 
 #endif

@@ -1,0 +1,7 @@
+package_name=com.paulocoutinho.axmolex
+engine_version=2.3.0-89c2d94
+project_type=cpp
+ndk=r27c
+target_sdk=35
+min_sdk=21
+build-tools=34.0.0

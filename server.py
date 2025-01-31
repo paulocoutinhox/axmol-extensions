@@ -13,7 +13,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     handler_class = partial(
         CORSRequestHandler,
-        directory=os.path.join("build_wasm", "bin", "axmol-extensions"),
+        directory=os.path.join("build_wasm", "bin", "axmol-ex"),
     )
     server_address = ("", 8000)
     httpd = HTTPServer(server_address, handler_class)

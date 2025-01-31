@@ -9,8 +9,7 @@ USING_NS_AX;
 
 Private inheritance here hides part of interface from Director.
 */
-class AppDelegate : private Application
-{
+class AppDelegate : private Application {
 public:
     AppDelegate();
     virtual ~AppDelegate();

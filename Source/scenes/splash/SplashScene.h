@@ -6,13 +6,10 @@ USING_NS_AX;
 
 #include "scenes/main/MainScene.h"
 
-class SplashScene : public Scene
-{
+class SplashScene : public Scene {
 public:
-    virtual bool init() override
-    {
-        if (!Scene::init())
-        {
+    virtual bool init() override {
+        if (!Scene::init()) {
             return false;
         }
 
@@ -22,12 +19,9 @@ public:
         // background image
         std::string backgroundImage;
 
-        if (winSize.width > winSize.height)
-        {
+        if (winSize.width > winSize.height) {
             backgroundImage = "SplashScreenLandscape.png";
-        }
-        else
-        {
+        } else {
             backgroundImage = "SplashScreenPortrait.png";
         }
 
@@ -49,8 +43,7 @@ public:
         return true;
     }
 
-    void load()
-    {
+    void load() {
         // preload your assets
         // AudioEngine::preload("sounds/music.mp3");
 

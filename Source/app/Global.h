@@ -4,8 +4,7 @@
 #include "axmol.h"
 USING_NS_AX;
 
-class Global
-{
+class Global {
 public:
     Vec2 winSize;
     Vec2 visibleSize;
@@ -14,25 +13,17 @@ public:
     Rect safeArea;
     Vec2 safeOrigin;
 
-    static Global &getInstance()
-    {
+    static Global &getInstance() {
         static Global instance;
         return instance;
     }
 
-    float scaleFactor(const float &value)
-    {
-        return value * Director::getInstance()->getContentScaleFactor();
-    }
+    float scaleFactor(const float &value) { return value * Director::getInstance()->getContentScaleFactor(); }
 
-    int scaleFactor(const int &value)
-    {
-        return value * Director::getInstance()->getContentScaleFactor();
-    }
+    int scaleFactor(const int &value) { return value * Director::getInstance()->getContentScaleFactor(); }
 
 private:
-    Global()
-    {
+    Global() {
         // size and origin
         winSize = Director::getInstance()->getWinSize();
         visibleSize = Director::getInstance()->getVisibleSize();

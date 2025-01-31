@@ -9,8 +9,7 @@
 #include "axmol.h"
 USING_NS_AX;
 
-class InfiniteScrollOffset : public ax::Layer
-{
+class InfiniteScrollOffset : public ax::Layer {
 public:
     virtual bool init();
     CREATE_FUNC(InfiniteScrollOffset);

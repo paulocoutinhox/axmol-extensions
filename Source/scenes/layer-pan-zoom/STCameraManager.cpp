@@ -7,24 +7,20 @@
 
 USING_NS_AX;
 
-STCameraManager *STCameraManager::get()
-{
+STCameraManager *STCameraManager::get() {
     static STCameraManager instance;
     return &instance;
 }
 
-void STCameraManager::setInputDisabled(bool disabled)
-{
+void STCameraManager::setInputDisabled(bool disabled) {
     panZoomLayer->setInputDisabled(disabled);
 }
 
-void STCameraManager::setupWithPanZoomLayer(STLayerPanZoom *layer)
-{
+void STCameraManager::setupWithPanZoomLayer(STLayerPanZoom *layer) {
     panZoomLayer = layer;
 }
 
-void STCameraManager::resetManager()
-{
+void STCameraManager::resetManager() {
     AXLOG("Resetting CM Manager!!");
     // setPanZoomLayer(nullptr);
     panZoomLayer = nullptr;
@@ -34,10 +30,8 @@ void STCameraManager::resetManager()
 ///////////////////////////////////////////
 // MARK: -
 
-void STCameraManager::pushState()
-{
-    if (!panZoomLayer)
-    {
+void STCameraManager::pushState() {
+    if (!panZoomLayer) {
         return;
     }
 
@@ -51,14 +45,11 @@ void STCameraManager::pushState()
     // dlog("pushstate: %s, scaleTo=%f", CStrFromPoint(state.worldCoord), state.scale);
 }
 
-bool STCameraManager::popStateWithAction(const popCallback &callback)
-{
-    if (!panZoomLayer)
-    {
+bool STCameraManager::popStateWithAction(const popCallback &callback) {
+    if (!panZoomLayer) {
         return false;
     }
-    if (stateStack.empty())
-    {
+    if (stateStack.empty()) {
         return false;
     }
 
@@ -81,15 +72,13 @@ bool STCameraManager::popStateWithAction(const popCallback &callback)
     return true;
 }
 
-bool STCameraManager::popState()
-{
+bool STCameraManager::popState() {
     return popStateWithAction(nullptr);
 }
 
 // MARK: -
 
-Vec2 STCameraManager::worldToScreen(const ax::Vec2 &worldCoord, float atScale)
-{
+Vec2 STCameraManager::worldToScreen(const ax::Vec2 &worldCoord, float atScale) {
     auto ws = Director::getInstance()->getWinSize();
     Vec2 screenCenter{ws.width * .5f, ws.height * .5f};
     Vec2 newOrigin = worldCoord * atScale;
@@ -100,8 +89,7 @@ Vec2 STCameraManager::worldToScreen(const ax::Vec2 &worldCoord, float atScale)
     return {screenCoord.x, screenCoord.y};
 }
 
-Vec2 STCameraManager::screenToWorld(const ax::Vec2 &screenCoord, float atScale)
-{
+Vec2 STCameraManager::screenToWorld(const ax::Vec2 &screenCoord, float atScale) {
     auto wsHalf = Director::getInstance()->getWinSize() * .5f;
     Vec2 screenCenter{wsHalf.width, wsHalf.height};
     Vec2 worldOrigin = screenCenter - screenCoord;
@@ -109,10 +97,8 @@ Vec2 STCameraManager::screenToWorld(const ax::Vec2 &screenCoord, float atScale)
     return worldCoord;
 }
 
-Vec2 STCameraManager::currentWorldCoord()
-{
-    if (!panZoomLayer)
-    {
+Vec2 STCameraManager::currentWorldCoord() {
+    if (!panZoomLayer) {
         return Vec2::ZERO;
     }
     Vec2 p = panZoomLayer->getPosition();
@@ -126,10 +112,8 @@ Vec2 STCameraManager::currentWorldCoord()
 
 // MARK: -
 
-bool STCameraManager::isMoving()
-{
-    if (!panZoomLayer)
-    {
+bool STCameraManager::isMoving() {
+    if (!panZoomLayer) {
         return false;
     }
 
@@ -143,16 +127,19 @@ bool STCameraManager::isMoving()
 
 // MARK: -
 
-// void CameraManager::setViewpointCenter(const Vec2& newWorldCoord, bool animated, float newScale /* = 0 */, float dur /* = 0 */, float delay /* = 0 */, FiniteTimeAction* callback /* = nullptr */)
-void STCameraManager::setViewpointCenter(const Vec2 &newWorldCoord, bool animated, float newScale /* = 0 */, float dur /* = 0 */, float delay /* = 0 */, const std::function<void()> &callback)
-{
-    if (!panZoomLayer)
-    {
+// void CameraManager::setViewpointCenter(const Vec2& newWorldCoord, bool animated, float newScale /* = 0 */, float dur
+// /* = 0 */, float delay /* = 0 */, FiniteTimeAction* callback /* = nullptr */)
+void STCameraManager::setViewpointCenter(const Vec2 &newWorldCoord,
+                                         bool animated,
+                                         float newScale /* = 0 */,
+                                         float dur /* = 0 */,
+                                         float delay /* = 0 */,
+                                         const std::function<void()> &callback) {
+    if (!panZoomLayer) {
         return;
     }
 
-    if (newScale == 0)
-    {
+    if (newScale == 0) {
         newScale = panZoomLayer->getScaleX();
     }
 
@@ -165,14 +152,12 @@ void STCameraManager::setViewpointCenter(const Vec2 &newWorldCoord, bool animate
 
     Vec2 newPos = worldToScreen(newWorldCoord, newScale);
 
-    if (animated)
-    {
+    if (animated) {
         float easeRate = 1.5f;
-        // dinfo2("panZoomLayer position by action => %s, scale: %f, easerate: %f\n\n", CStrFromPoint(newPos), newScale, easeRate);
+        // dinfo2("panZoomLayer position by action => %s, scale: %f, easerate: %f\n\n", CStrFromPoint(newPos), newScale,
+        // easeRate);
         panZoomLayer->runCameraAction(delay, dur, newPos, newScale, easeRate, callback);
-    }
-    else
-    {
+    } else {
         panZoomLayer->setPosition(newPos);
         panZoomLayer->setScale(newScale);
         //        dinfo2("newWorldCoord: %s, newPos: %s, newScale: %f\n\n",
@@ -184,14 +169,14 @@ void STCameraManager::setViewpointCenter(const Vec2 &newWorldCoord, bool animate
 
 // MARK: Move To -
 
-void STCameraManager::moveTo(const Vec2 &position, bool animated /* = false */, float newScale /* = 0 */, float dur /* = 0 */)
-{
-    if (!panZoomLayer)
-    {
+void STCameraManager::moveTo(const Vec2 &position,
+                             bool animated /* = false */,
+                             float newScale /* = 0 */,
+                             float dur /* = 0 */) {
+    if (!panZoomLayer) {
         return;
     }
-    if (newScale == 0)
-    {
+    if (newScale == 0) {
         newScale = panZoomLayer->getScaleX();
     }
     setViewpointCenter(position, animated, newScale, dur);
@@ -200,36 +185,32 @@ void STCameraManager::moveTo(const Vec2 &position, bool animated /* = false */, 
 // MARK: Move By -
 
 // position - ?? world coord ?? offset from current camera "center of screen" world coord
-void STCameraManager::moveBy(const Vec2 &position, bool animated /* = false */, float newScale /* = 0 */, float dur /* = 0 */)
-{
+void STCameraManager::moveBy(const Vec2 &position,
+                             bool animated /* = false */,
+                             float newScale /* = 0 */,
+                             float dur /* = 0 */) {
     // dinfo("enter: moveby p = %s", CStrFromPoint(position));
-    if (!panZoomLayer)
-    {
+    if (!panZoomLayer) {
         return;
     }
 
-    if (position.isZero() && newScale == 0)
-    {
+    if (position.isZero() && newScale == 0) {
         return;
     }
 
     Vec2 oldWorldCoord = currentWorldCoord();
     Vec2 newWorldCoord = oldWorldCoord + position;
-    if (animated && dur == 0)
-    {
+    if (animated && dur == 0) {
         dur = 0.5f;
     }
-    if (newScale == 0)
-    {
+    if (newScale == 0) {
         newScale = panZoomLayer->getScaleX();
     }
     setViewpointCenter(newWorldCoord, animated, newScale, dur);
 }
 
-void STCameraManager::scaleBy(float scaleFactor)
-{
-    if (!panZoomLayer)
-    {
+void STCameraManager::scaleBy(float scaleFactor) {
+    if (!panZoomLayer) {
         return;
     }
 

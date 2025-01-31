@@ -5,19 +5,18 @@
 #include "scenes/infinite-scroll/InfiniteScrollScene.h"
 #include "scenes/layer-pan-zoom/LayerPanZoomScene.h"
 #include "scenes/splash/SplashScene.h"
+#include "scenes/ui/SimpleCheckBoxScene.h"
 
-enum ListItem
-{
+enum ListItem {
     Splash = 0,
     LayerPanZoom = 1,
     InfiniteScroll = 2,
+    SimpleCheckBox = 3,
 };
 
-bool MainScene::init()
-{
+bool MainScene::init() {
     // super init first
-    if (!Scene::init())
-    {
+    if (!Scene::init()) {
         return false;
     }
 
@@ -30,8 +29,7 @@ bool MainScene::init()
     return true;
 }
 
-void MainScene::setupUI()
-{
+void MainScene::setupUI() {
     // create list view
     listView = ax::ui::ListView::create();
     listView->setDirection(ui::ScrollView::Direction::VERTICAL);
@@ -81,8 +79,7 @@ void MainScene::setupUI()
     listView->jumpToTop();
 }
 
-void MainScene::addListItem(int tag, const std::string &text, ax::ui::Layout *defaultItem)
-{
+void MainScene::addListItem(int tag, const std::string &text, ax::ui::Layout *defaultItem) {
     ax::ui::Widget *item = defaultItem->clone();
     item->setTag(tag);
     ax::ui::Button *btn = (ax::ui::Button *)item->getChildByName("TitleButton");
@@ -90,8 +87,7 @@ void MainScene::addListItem(int tag, const std::string &text, ax::ui::Layout *de
     listView->pushBackCustomItem(item);
 }
 
-void MainScene::setupListData(ax::ui::Layout *defaultItem)
-{
+void MainScene::setupListData(ax::ui::Layout *defaultItem) {
     // splash
     addListItem(ListItem::Splash, "Splash", defaultItem);
 
@@ -100,14 +96,15 @@ void MainScene::setupListData(ax::ui::Layout *defaultItem)
 
     // infinite scroll
     addListItem(ListItem::InfiniteScroll, "Infinite Scroll", defaultItem);
+
+    // simple check box
+    addListItem(ListItem::SimpleCheckBox, "Simple Check Box", defaultItem);
 }
 
-void MainScene::onItemSelected(int tag)
-{
+void MainScene::onItemSelected(int tag) {
     Scene *scene;
 
-    switch (tag)
-    {
+    switch (tag) {
     case ListItem::Splash:
         // splash
         scene = utils::createInstance<SplashScene>();
@@ -120,20 +117,20 @@ void MainScene::onItemSelected(int tag)
         // infinite scroll
         scene = utils::createInstance<InfiniteScrollScene>();
         break;
+    case ListItem::SimpleCheckBox:
+        // simple check box
+        scene = utils::createInstance<SimpleCheckBoxScene>();
+        break;
     }
 
-    if (scene)
-    {
+    if (scene) {
         Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene, Color3B(0, 0, 0)));
     }
 }
 
-void MainScene::selectedItemEvent(Ref *sender, ax::ui::ListView::EventType type)
-{
-    switch (type)
-    {
-    case ax::ui::ListView::EventType::ON_SELECTED_ITEM_END:
-    {
+void MainScene::selectedItemEvent(Object *sender, ax::ui::ListView::EventType type) {
+    switch (type) {
+    case ax::ui::ListView::EventType::ON_SELECTED_ITEM_END: {
         ax::ui::ListView *listView = static_cast<ax::ui::ListView *>(sender);
         auto tag = listView->getItem(listView->getCurSelectedIndex())->getTag();
         onItemSelected(tag);
@@ -144,7 +141,6 @@ void MainScene::selectedItemEvent(Ref *sender, ax::ui::ListView::EventType type)
     }
 }
 
-void MainScene::update(float delta)
-{
+void MainScene::update(float delta) {
     //
 }

@@ -2,11 +2,9 @@
 #include "scenes/main/MainScene.h"
 #include "ui/UIButton.h"
 
-bool InfiniteScrollScene::init()
-{
+bool InfiniteScrollScene::init() {
     // super init first
-    if (!Scene::init())
-    {
+    if (!Scene::init()) {
         return false;
     }
 
@@ -22,8 +20,7 @@ bool InfiniteScrollScene::init()
     return true;
 }
 
-void InfiniteScrollScene::setupCustom()
-{
+void InfiniteScrollScene::setupCustom() {
     {
         Sprite *bg1 = Sprite::create("backgrounds/layers/sky.png");
         Sprite *bg2 = Sprite::create("backgrounds/layers/sky.png");
@@ -71,8 +68,7 @@ void InfiniteScrollScene::setupCustom()
     }
 }
 
-void InfiniteScrollScene::update(float delta)
-{
+void InfiniteScrollScene::update(float delta) {
     float scrollSpeedX1 = -1;
     float scrollSpeedX2 = -4;
     float scrollSpeedX3 = -6;
@@ -87,18 +83,19 @@ void InfiniteScrollScene::update(float delta)
     infiniteScroll5->updateWithVelocity(Point(scrollSpeedX5, scrollSpeedY), delta);
 }
 
-void InfiniteScrollScene::setupUI()
-{
+void InfiniteScrollScene::setupUI() {
     // layer
     uiLayer = Layer::create();
     addChild(uiLayer, 1000);
 
     // back button
     auto backButton = ui::Button::create("ButtonBack.png", "ButtonBack.png");
-    backButton->setPosition(Vec2(_director->getWinSize().width - backButton->getContentSize().width / 2 - backButton->getContentSize().width / 2, backButton->getContentSize().height / 2 + backButton->getContentSize().height / 2));
+    backButton->setPosition(Vec2(
+        _director->getWinSize().width - backButton->getContentSize().width / 2 - backButton->getContentSize().width / 2,
+        backButton->getContentSize().height / 2 + backButton->getContentSize().height / 2));
 
     // clang-format off
-    backButton->addTouchEventListener([=](Ref *sender, ui::Widget::TouchEventType type) {
+    backButton->addTouchEventListener([=](Object *sender, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::ENDED)
         {
             auto scene = utils::createInstance<MainScene>();
