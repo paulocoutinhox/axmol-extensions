@@ -59,31 +59,24 @@ STLayerPanZoom::STLayerPanZoom()
     , _zoomWaitTimerDampen(0)
 {
     setZoomLevels({
-        .0625f,
-        .125f,
-        .25f,
-        .5f,
-        .75f,
-        1.f,
-        1.5f,
-        2.f,
+        .0625f, .125f, .25f, .5f, .75f, 1.f, 1.5f, 2.f,
         //        5.f,
         //        10.f, TODO: too close at 736x320
     });
 
-    _stage = -1;
-    _targetDelay = 0.f;
-    _targetScale = 1.f;
+    _stage          = -1;
+    _targetDelay    = 0.f;
+    _targetScale    = 1.f;
     _targetPosition = Vec2::ZERO;
-    _startPosition = Vec2::ZERO;
-    _startScaleX = 0;
-    _startScaleY = 0;
-    _startScaleZ = 0;
-    _deltaScaleX = 0;
-    _deltaScaleY = 0;
-    _deltaScaleZ = 0;
-    _easeRate = 0.f;
-    _elapsed = 0.f;
+    _startPosition  = Vec2::ZERO;
+    _startScaleX    = 0;
+    _startScaleY    = 0;
+    _startScaleZ    = 0;
+    _deltaScaleX    = 0;
+    _deltaScaleY    = 0;
+    _deltaScaleZ    = 0;
+    _easeRate       = 0.f;
+    _elapsed        = 0.f;
 }
 
 STLayerPanZoom::~STLayerPanZoom()
@@ -93,14 +86,20 @@ STLayerPanZoom::~STLayerPanZoom()
 
 //////////
 
-bool STLayerPanZoom::isDisabled(void) const { return _isDisabled; }
+bool STLayerPanZoom::isDisabled(void) const
+{
+    return _isDisabled;
+}
 void STLayerPanZoom::setDisabled(bool var)
 {
     _isDisabled = var;
     AXLOG("setting panzoom disabled = %d", var);
 }
 
-bool STLayerPanZoom::isInputDisabled(void) const { return _inputDisabled; }
+bool STLayerPanZoom::isInputDisabled(void) const
+{
+    return _inputDisabled;
+}
 void STLayerPanZoom::setInputDisabled(bool var)
 {
     if (var)
@@ -109,14 +108,20 @@ void STLayerPanZoom::setInputDisabled(bool var)
     AXLOG("setting input disabled = %d", var);
 }
 
-bool STLayerPanZoom::isPanDisabled(void) const { return _panDisabled; }
+bool STLayerPanZoom::isPanDisabled(void) const
+{
+    return _panDisabled;
+}
 void STLayerPanZoom::setPanDisabled(bool var)
 {
     _panDisabled = var;
     AXLOG("setting pan disabled = %d", var);
 }
 
-bool STLayerPanZoom::isZoomDisabled(void) const { return _zoomDisabled; }
+bool STLayerPanZoom::isZoomDisabled(void) const
+{
+    return _zoomDisabled;
+}
 void STLayerPanZoom::setZoomDisabled(bool var)
 {
     _zoomDisabled = var;
@@ -164,9 +169,9 @@ float STLayerPanZoom::rubberEffectRatio()
     return _rubberEffectRatio;
 }
 
-STLayerPanZoom *STLayerPanZoom::layer()
+STLayerPanZoom* STLayerPanZoom::layer()
 {
-    STLayerPanZoom *layer = STLayerPanZoom::create();
+    STLayerPanZoom* layer = STLayerPanZoom::create();
     return layer;
 }
 
@@ -184,23 +189,23 @@ bool STLayerPanZoom::init()
     _maxScale = 2.f * SCALE_LARGE;
     _minScale = 0.1f * SCALE_LARGE;
 
-    _worldBounds = ax::Rect::ZERO;
-    _panBoundsRect = ax::Rect::ZERO;
-    _touchDistance = 0.f;
+    _worldBounds             = ax::Rect::ZERO;
+    _panBoundsRect           = ax::Rect::ZERO;
+    _touchDistance           = 0.f;
     _maxTouchDistanceToClick = 15.f;
 
-    _mode = kSTLayerPanZoomModeSheet;
-    _minSpeed = 100.f;
-    _maxSpeed = 1000.f;
-    _topFrameMargin = 100.f;
+    _mode              = kSTLayerPanZoomModeSheet;
+    _minSpeed          = 100.f;
+    _maxSpeed          = 1000.f;
+    _topFrameMargin    = 100.f;
     _bottomFrameMargin = 100.f;
-    _leftFrameMargin = 100.f;
-    _rightFrameMargin = 100.f;
+    _leftFrameMargin   = 100.f;
+    _rightFrameMargin  = 100.f;
 
-    _rubberEffectRatio = 0.5f;
+    _rubberEffectRatio        = 0.5f;
     _rubberEffectRecoveryTime = 0.2f;
-    _rubberEffectRecovering = false;
-    _rubberEffectZooming = false;
+    _rubberEffectRecovering   = false;
+    _rubberEffectZooming      = false;
 
     return true;
 }
@@ -230,7 +235,8 @@ void STLayerPanZoom::update(float dt)
         return;
     }
 
-#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
+#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
 
     // Mouse Pan Support (Desktop)
 
@@ -251,18 +257,18 @@ void STLayerPanZoom::update(float dt)
         bool edgeScrollEnabled = false;
         if (edgeScrollEnabled)
         {
-            auto ws = Director::getInstance()->getWinSize();
-            auto screenRect = ax::Rect(0, 0, ws.width, ws.height);
-            auto p = _mouseBeganPosition;
+            auto ws                      = Director::getInstance()->getWinSize();
+            auto screenRect              = ax::Rect(0, 0, ws.width, ws.height);
+            auto p                       = _mouseBeganPosition;
             const float scrollEdgeMargin = 35.f * SCALE_LARGE;
 
             if (screenRect.containsPoint(p))
             {
-                Vec2 moveBy = Vec2::ZERO;
-                float left = scrollEdgeMargin;
+                Vec2 moveBy  = Vec2::ZERO;
+                float left   = scrollEdgeMargin;
                 float bottom = scrollEdgeMargin;
-                float top = ws.height - scrollEdgeMargin;
-                float right = ws.width - scrollEdgeMargin;
+                float top    = ws.height - scrollEdgeMargin;
+                float right  = ws.width - scrollEdgeMargin;
 
                 // make sure to not include CORNERS (or rather hopefully HUD buttons are checked for first)
                 if (p.x < left && p.y > bottom && p.y < top)
@@ -283,19 +289,20 @@ void STLayerPanZoom::update(float dt)
                 }
 
                 auto unitPerSec = 1 * SCALE_LARGE;
-                auto speed = unitPerSec * (60 * dt);
+                auto speed      = unitPerSec * (60 * dt);
                 STCameraManager::get()->moveBy(moveBy * speed);
             }
         }
     }
 
-#endif // ifdef desktop
+#endif  // ifdef desktop
 
     updateCameraAction(dt);
 
     AXASSERT(getScheduler()->getTimeScale() > 0, "timescale IS ZERO!");
 
-#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
+#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
 
     // Keyboard Pan Support (Desktop)
 
@@ -306,7 +313,7 @@ void STLayerPanZoom::update(float dt)
         for (auto pair : _cameraInputs)
         {
             auto keycode = pair.first;
-            auto it = _keyState.find(keycode);
+            auto it      = _keyState.find(keycode);
             if (it != _keyState.end())
             {
                 bool isPressed = it->second;
@@ -329,7 +336,7 @@ void STLayerPanZoom::update(float dt)
             for (auto pair : _cameraInputsArrows)
             {
                 auto keycode = pair.first;
-                auto it = _keyState.find(keycode);
+                auto it      = _keyState.find(keycode);
                 if (it != _keyState.end())
                 {
                     bool isPressed = it->second;
@@ -357,7 +364,7 @@ void STLayerPanZoom::update(float dt)
 
         // Do not update position if pinch is still possible.
         time_t seconds;
-        seconds = time(nullptr);
+        seconds      = time(nullptr);
         time_t delta = seconds - _singleTouchTimestamp;
         if (delta > 0 && delta < kSTLayerPanZoomMultitouchGesturesDetectionDelay)
         {
@@ -365,8 +372,8 @@ void STLayerPanZoom::update(float dt)
         }
 
         // Otherwise - update touch position. Get current position of touch.
-        Touch *touch = (Touch *)_touches.at(0);
-        Vec2 curPos = Director::getInstance()->convertToGL(touch->getLocationInView());
+        Touch* touch = (Touch*)_touches.at(0);
+        Vec2 curPos  = Director::getInstance()->convertToGL(touch->getLocationInView());
 
         // Scroll if finger in the scroll area near edge.
         if (frameEdgeWithPoint(curPos) != kCCLayerPanZoomFrameEdgeNone)
@@ -412,10 +419,10 @@ void STLayerPanZoom::setPanBoundsRect(ax::Rect rect)
 Vec2 nearestPointInPerimiter(ax::Rect r, Vec2 p)
 {
     // local function getNearestPointInPerimeter(l,t,w,h, x,y)
-    float left = r.origin.x;
-    float right = left + r.size.width;
+    float left   = r.origin.x;
+    float right  = left + r.size.width;
     float bottom = r.origin.y;
-    float top = bottom + r.size.height;
+    float top    = bottom + r.size.height;
 
     float x = clampf(p.x, left, right);
     float y = clampf(p.y, bottom, top);
@@ -425,10 +432,7 @@ Vec2 nearestPointInPerimiter(ax::Rect r, Vec2 p)
     float db = fabsf(y - bottom);
     float dt = fabsf(y - top);
 
-    auto min4 = [](float a, float b, float c, float d)
-    {
-        return MIN(a, MIN(b, MIN(c, d)));
-    };
+    auto min4 = [](float a, float b, float c, float d) { return MIN(a, MIN(b, MIN(c, d))); };
 
     float m = min4(dl, dr, dt, db);
 
@@ -443,7 +447,7 @@ Vec2 nearestPointInPerimiter(ax::Rect r, Vec2 p)
     return Vec2(x, y);
 }
 
-void STLayerPanZoom::setPosition(const ax::Vec2 &position)
+void STLayerPanZoom::setPosition(const ax::Vec2& position)
 {
     if (isPanDisabled())
         return;
@@ -465,10 +469,11 @@ void STLayerPanZoom::setPosition(const ax::Vec2 &position)
         if (!_worldBounds.containsPoint(worldCoord))
         {
             Vec2 newWorld = nearestPointInPerimiter(_worldBounds, worldCoord);
-            float scale = getScaleX();
-            newPos = STCameraManager::get()->worldToScreen(newWorld, scale);
+            float scale   = getScaleX();
+            newPos        = STCameraManager::get()->worldToScreen(newWorld, scale);
         }
-        // AXLOG("scale = %f, old = %s, new = %s, world = %s", getScale(), CStrFromPoint(prevPosition), CStrFromPoint(newPos), CStrFromPoint(worldCoord));
+        // AXLOG("scale = %f, old = %s, new = %s, world = %s", getScale(), CStrFromPoint(prevPosition),
+        // CStrFromPoint(newPos), CStrFromPoint(worldCoord));
         Node::setPosition(newPos);
     }
     else
@@ -479,22 +484,21 @@ void STLayerPanZoom::setPosition(const ax::Vec2 &position)
             {
                 if (!_rubberEffectRecovering)
                 {
-                    float topEdgeDist = topEdgeDistance();
+                    float topEdgeDist    = topEdgeDistance();
                     float bottomEdgeDist = bottomEdgeDistance();
-                    float leftEdgeDist = leftEdgeDistance();
-                    float rightEdgeDist = rightEdgeDistance();
-                    float dx = getPosition().x - prevPosition.x;
-                    float dy = getPosition().y - prevPosition.y;
-                    AXLOG("%f,%f,%f,%f => dx = %f, dy = %f", topEdgeDist, bottomEdgeDist, leftEdgeDist, rightEdgeDist, dx, dy);
+                    float leftEdgeDist   = leftEdgeDistance();
+                    float rightEdgeDist  = rightEdgeDistance();
+                    float dx             = getPosition().x - prevPosition.x;
+                    float dy             = getPosition().y - prevPosition.y;
+                    AXLOG("%f,%f,%f,%f => dx = %f, dy = %f", topEdgeDist, bottomEdgeDist, leftEdgeDist, rightEdgeDist,
+                          dx, dy);
                     if (bottomEdgeDist != 0.f || topEdgeDist != 0.f)
                     {
-                        Node::setPosition(Vec2(getPosition().x,
-                                               prevPosition.y + dy * _rubberEffectRatio));
+                        Node::setPosition(Vec2(getPosition().x, prevPosition.y + dy * _rubberEffectRatio));
                     }
                     if (leftEdgeDist != 0.f || rightEdgeDist != 0.f)
                     {
-                        Node::setPosition(Vec2(prevPosition.x + dx * _rubberEffectRatio,
-                                               getPosition().y));
+                        Node::setPosition(Vec2(prevPosition.x + dx * _rubberEffectRatio, getPosition().y));
                     }
                 }
             }
@@ -505,23 +509,23 @@ void STLayerPanZoom::setPosition(const ax::Vec2 &position)
 
                 if (getPosition().x - boundBox.size.width * getAnchorPoint().x > _panBoundsRect.origin.x)
                 {
-                    Node::setPosition(Vec2(boundBox.size.width * getAnchorPoint().x + _panBoundsRect.origin.x,
-                                           getPosition().y));
+                    Node::setPosition(
+                        Vec2(boundBox.size.width * getAnchorPoint().x + _panBoundsRect.origin.x, getPosition().y));
                 }
                 if (getPosition().y - boundBox.size.height * getAnchorPoint().y > _panBoundsRect.origin.y)
                 {
-                    Node::setPosition(Vec2(getPosition().x, boundBox.size.height * getAnchorPoint().y +
-                                                                _panBoundsRect.origin.y));
+                    Node::setPosition(
+                        Vec2(getPosition().x, boundBox.size.height * getAnchorPoint().y + _panBoundsRect.origin.y));
                 }
-                if (getPosition().x + boundBox.size.width * (1 - getAnchorPoint().x) < _panBoundsRect.size.width +
-                                                                                           _panBoundsRect.origin.x)
+                if (getPosition().x + boundBox.size.width * (1 - getAnchorPoint().x) <
+                    _panBoundsRect.size.width + _panBoundsRect.origin.x)
                 {
                     Node::setPosition(Vec2(_panBoundsRect.size.width + _panBoundsRect.origin.x -
                                                boundBox.size.width * (1 - getAnchorPoint().x),
                                            getPosition().y));
                 }
-                if (getPosition().y + boundBox.size.height * (1 - getAnchorPoint().y) < _panBoundsRect.size.height +
-                                                                                            _panBoundsRect.origin.y)
+                if (getPosition().y + boundBox.size.height * (1 - getAnchorPoint().y) <
+                    _panBoundsRect.size.height + _panBoundsRect.origin.y)
                 {
                     Node::setPosition(Vec2(getPosition().x, _panBoundsRect.size.height + _panBoundsRect.origin.y -
                                                                 boundBox.size.height * (1 - getAnchorPoint().y)));
@@ -529,8 +533,7 @@ void STLayerPanZoom::setPosition(const ax::Vec2 &position)
             }
         }
 
-        Node::setPosition(Vec2(ceilf(getPosition().x),
-                               ceilf(getPosition().y)));
+        Node::setPosition(Vec2(ceilf(getPosition().x), ceilf(getPosition().y)));
     }
 }
 
@@ -551,12 +554,12 @@ void STLayerPanZoom::recoverPositionAndScale()
 {
     if (!_panBoundsRect.equals(ax::Rect::ZERO))
     {
-        ax::Size winSize = Director::getInstance()->getWinSize();
-        float rightEdgeDist = rightEdgeDistance();
-        float leftEdgeDist = leftEdgeDistance();
-        float topEdgeDist = topEdgeDistance();
+        ax::Size winSize     = Director::getInstance()->getWinSize();
+        float rightEdgeDist  = rightEdgeDistance();
+        float leftEdgeDist   = leftEdgeDistance();
+        float topEdgeDist    = topEdgeDistance();
         float bottomEdgeDist = bottomEdgeDistance();
-        float scale = minPossibleScale();
+        float scale          = minPossibleScale();
 
         if (rightEdgeDist == 0.f && leftEdgeDist == 0.f && topEdgeDist == 0.f && bottomEdgeDist == 0.f)
         {
@@ -566,88 +569,86 @@ void STLayerPanZoom::recoverPositionAndScale()
         if (getScaleX() < scale)
         {
             _rubberEffectRecovering = true;
-            Vec2 newPosition = Vec2::ZERO;
+            Vec2 newPosition        = Vec2::ZERO;
             if (rightEdgeDist != 0.f && leftEdgeDist != 0.f && topEdgeDist != 0.f && bottomEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
-                float dy = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
+                float dx    = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
+                float dy    = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
                 newPosition = Vec2(winSize.width * 0.5f + dx, winSize.height * 0.5f + dy);
             }
             else if (rightEdgeDist != 0.f && leftEdgeDist != 0.f && topEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
-                float dy = scale * getContentSize().height * (1.f - getAnchorPoint().y);
+                float dx    = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
+                float dy    = scale * getContentSize().height * (1.f - getAnchorPoint().y);
                 newPosition = Vec2(winSize.width * 0.5f + dx, winSize.height - dy);
             }
             else if (rightEdgeDist != 0.f && leftEdgeDist != 0.f && bottomEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
-                float dy = scale * getContentSize().height * getAnchorPoint().y;
+                float dx    = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
+                float dy    = scale * getContentSize().height * getAnchorPoint().y;
                 newPosition = Vec2(winSize.width * 0.5f + dx, dy);
             }
             else if (rightEdgeDist != 0.f && topEdgeDist != 0.f && bottomEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (1.f - getAnchorPoint().x);
-                float dy = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
+                float dx    = scale * getContentSize().width * (1.f - getAnchorPoint().x);
+                float dy    = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
                 newPosition = Vec2(winSize.width - dx, winSize.height * 0.5f + dy);
             }
             else if (leftEdgeDist != 0.f && topEdgeDist != 0.f && bottomEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * getAnchorPoint().x;
-                float dy = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
+                float dx    = scale * getContentSize().width * getAnchorPoint().x;
+                float dy    = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
                 newPosition = Vec2(dx, winSize.height * 0.5f + dy);
             }
             else if (leftEdgeDist != 0.f && topEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * getAnchorPoint().x;
-                float dy = scale * getContentSize().height * (1.f - getAnchorPoint().y);
+                float dx    = scale * getContentSize().width * getAnchorPoint().x;
+                float dy    = scale * getContentSize().height * (1.f - getAnchorPoint().y);
                 newPosition = Vec2(dx, winSize.height - dy);
             }
             else if (leftEdgeDist != 0.f && bottomEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * getAnchorPoint().x;
-                float dy = scale * getContentSize().height * getAnchorPoint().y;
+                float dx    = scale * getContentSize().width * getAnchorPoint().x;
+                float dy    = scale * getContentSize().height * getAnchorPoint().y;
                 newPosition = Vec2(dx, dy);
             }
             else if (rightEdgeDist != 0.f && topEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (1.f - getAnchorPoint().x);
-                float dy = scale * getContentSize().height * (1.f - getAnchorPoint().y);
+                float dx    = scale * getContentSize().width * (1.f - getAnchorPoint().x);
+                float dy    = scale * getContentSize().height * (1.f - getAnchorPoint().y);
                 newPosition = Vec2(winSize.width - dx, winSize.height - dy);
             }
             else if (rightEdgeDist != 0.f && bottomEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (1.f - getAnchorPoint().x);
-                float dy = scale * getContentSize().height * getAnchorPoint().y;
+                float dx    = scale * getContentSize().width * (1.f - getAnchorPoint().x);
+                float dy    = scale * getContentSize().height * getAnchorPoint().y;
                 newPosition = Vec2(winSize.width - dx, dy);
             }
             else if (topEdgeDist != 0.f || bottomEdgeDist != 0.f)
             {
-                float dy = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
+                float dy    = scale * getContentSize().height * (getAnchorPoint().y - 0.5f);
                 newPosition = Vec2(getPosition().x, winSize.height * 0.5f + dy);
             }
             else if (leftEdgeDist != 0.f || rightEdgeDist != 0.f)
             {
-                float dx = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
+                float dx    = scale * getContentSize().width * (getAnchorPoint().x - 0.5f);
                 newPosition = Vec2(winSize.width * 0.5f + dx, getPosition().y);
             }
 
-            auto moveToPosition = MoveTo::create(_rubberEffectRecoveryTime, newPosition);
+            auto moveToPosition  = MoveTo::create(_rubberEffectRecoveryTime, newPosition);
             auto scaleToPosition = ScaleTo::create(_rubberEffectRecoveryTime, scale, scale);
-            auto callback = CallFunc::create([this]()
-                                             { recoverEnded(); });
-            auto spawn = Spawn::create(scaleToPosition, moveToPosition, callback, nullptr);
+            auto callback        = CallFunc::create([this]() { recoverEnded(); });
+            auto spawn           = Spawn::create(scaleToPosition, moveToPosition, callback, nullptr);
             runAction(spawn);
         }
         else
         {
             _rubberEffectRecovering = false;
-            auto delta = Vec2(getPosition().x + rightEdgeDist - leftEdgeDist,
-                              getPosition().y + topEdgeDist - bottomEdgeDist);
-            auto callback = CallFunc::create([this]()
-                                             { recoverEnded(); });
+            auto delta =
+                Vec2(getPosition().x + rightEdgeDist - leftEdgeDist, getPosition().y + topEdgeDist - bottomEdgeDist);
+            auto callback       = CallFunc::create([this]() { recoverEnded(); });
             auto moveToPosition = MoveTo::create(_rubberEffectRecoveryTime, delta);
-            auto seq = Spawn::create(moveToPosition, callback, nullptr);
+            auto seq            = Spawn::create(moveToPosition, callback, nullptr);
             runAction(seq);
         }
     }
@@ -663,7 +664,9 @@ void STLayerPanZoom::recoverEnded()
 float STLayerPanZoom::topEdgeDistance()
 {
     ax::Rect boundBox = getBoundingBox();
-    return round(MAX(_panBoundsRect.size.height + _panBoundsRect.origin.y - getPosition().y - boundBox.size.height * (1 - getAnchorPoint().y), 0.f));
+    return round(MAX(_panBoundsRect.size.height + _panBoundsRect.origin.y - getPosition().y -
+                         boundBox.size.height * (1 - getAnchorPoint().y),
+                     0.f));
 }
 
 float STLayerPanZoom::leftEdgeDistance()
@@ -681,7 +684,9 @@ float STLayerPanZoom::bottomEdgeDistance()
 float STLayerPanZoom::rightEdgeDistance()
 {
     ax::Rect boundBox = getBoundingBox();
-    return round(MAX(_panBoundsRect.size.width + _panBoundsRect.origin.x - getPosition().x - boundBox.size.width * (1 - getAnchorPoint().x), 0));
+    return round(MAX(_panBoundsRect.size.width + _panBoundsRect.origin.x - getPosition().x -
+                         boundBox.size.width * (1 - getAnchorPoint().x),
+                     0));
 }
 
 float STLayerPanZoom::minPossibleScale()
@@ -697,12 +702,12 @@ float STLayerPanZoom::minPossibleScale()
     }
 }
 
-CCLayerPanZoomFrameEdge STLayerPanZoom::frameEdgeWithPoint(const Vec2 &point)
+CCLayerPanZoomFrameEdge STLayerPanZoom::frameEdgeWithPoint(const Vec2& point)
 {
-    bool isLeft = point.x <= _panBoundsRect.origin.x + _leftFrameMargin;
-    bool isRight = point.x >= _panBoundsRect.origin.x + _panBoundsRect.size.width - _rightFrameMargin;
+    bool isLeft   = point.x <= _panBoundsRect.origin.x + _leftFrameMargin;
+    bool isRight  = point.x >= _panBoundsRect.origin.x + _panBoundsRect.size.width - _rightFrameMargin;
     bool isBottom = point.y <= _panBoundsRect.origin.y + _bottomFrameMargin;
-    bool isTop = point.y >= _panBoundsRect.origin.y + _panBoundsRect.size.height - _topFrameMargin;
+    bool isTop    = point.y >= _panBoundsRect.origin.y + _panBoundsRect.size.height - _topFrameMargin;
 
     if (isLeft && isBottom)
     {
@@ -741,63 +746,59 @@ CCLayerPanZoomFrameEdge STLayerPanZoom::frameEdgeWithPoint(const Vec2 &point)
     return kCCLayerPanZoomFrameEdgeNone;
 }
 
-float STLayerPanZoom::horSpeedWithPosition(const Vec2 &pos)
+float STLayerPanZoom::horSpeedWithPosition(const Vec2& pos)
 {
     CCLayerPanZoomFrameEdge edge = frameEdgeWithPoint(pos);
-    float speed = 0.f;
+    float speed                  = 0.f;
     if (edge == kCCLayerPanZoomFrameEdgeLeft)
     {
-        speed = _minSpeed + (_maxSpeed - _minSpeed) *
-                                (_panBoundsRect.origin.x + _leftFrameMargin - pos.x) / _leftFrameMargin;
+        speed = _minSpeed +
+                (_maxSpeed - _minSpeed) * (_panBoundsRect.origin.x + _leftFrameMargin - pos.x) / _leftFrameMargin;
     }
     if (edge == kCCLayerPanZoomFrameEdgeBottomLeft || edge == kCCLayerPanZoomFrameEdgeTopLeft)
     {
-        speed = _minSpeed + (_maxSpeed - _minSpeed) *
-                                (_panBoundsRect.origin.x + _leftFrameMargin - pos.x) / (_leftFrameMargin * sqrtf(2));
+        speed = _minSpeed + (_maxSpeed - _minSpeed) * (_panBoundsRect.origin.x + _leftFrameMargin - pos.x) /
+                                (_leftFrameMargin * sqrtf(2));
     }
     if (edge == kCCLayerPanZoomFrameEdgeRight)
     {
         speed = -(_minSpeed + (_maxSpeed - _minSpeed) *
-                                  (pos.x - _panBoundsRect.origin.x - _panBoundsRect.size.width +
-                                   _rightFrameMargin) /
+                                  (pos.x - _panBoundsRect.origin.x - _panBoundsRect.size.width + _rightFrameMargin) /
                                   _rightFrameMargin);
     }
     if (edge == kCCLayerPanZoomFrameEdgeBottomRight || edge == kCCLayerPanZoomFrameEdgeTopRight)
     {
         speed = -(_minSpeed + (_maxSpeed - _minSpeed) *
-                                  (pos.x - _panBoundsRect.origin.x - _panBoundsRect.size.width +
-                                   _rightFrameMargin) /
+                                  (pos.x - _panBoundsRect.origin.x - _panBoundsRect.size.width + _rightFrameMargin) /
                                   (_rightFrameMargin * sqrtf(2)));
     }
     return speed;
 }
 
-float STLayerPanZoom::vertSpeedWithPosition(const Vec2 &pos)
+float STLayerPanZoom::vertSpeedWithPosition(const Vec2& pos)
 {
     CCLayerPanZoomFrameEdge edge = frameEdgeWithPoint(pos);
-    float speed = 0.f;
+    float speed                  = 0.f;
     if (edge == kCCLayerPanZoomFrameEdgeBottom)
     {
-        speed = _minSpeed + (_maxSpeed - _minSpeed) *
-                                (_panBoundsRect.origin.y + _bottomFrameMargin - pos.y) / _bottomFrameMargin;
+        speed = _minSpeed +
+                (_maxSpeed - _minSpeed) * (_panBoundsRect.origin.y + _bottomFrameMargin - pos.y) / _bottomFrameMargin;
     }
     if (edge == kCCLayerPanZoomFrameEdgeBottomLeft || edge == kCCLayerPanZoomFrameEdgeBottomRight)
     {
-        speed = _minSpeed + (_maxSpeed - _minSpeed) *
-                                (_panBoundsRect.origin.y + _bottomFrameMargin - pos.y) / (_bottomFrameMargin * sqrtf(2));
+        speed = _minSpeed + (_maxSpeed - _minSpeed) * (_panBoundsRect.origin.y + _bottomFrameMargin - pos.y) /
+                                (_bottomFrameMargin * sqrtf(2));
     }
     if (edge == kCCLayerPanZoomFrameEdgeTop)
     {
         speed = -(_minSpeed + (_maxSpeed - _minSpeed) *
-                                  (pos.y - _panBoundsRect.origin.y - _panBoundsRect.size.height +
-                                   _topFrameMargin) /
+                                  (pos.y - _panBoundsRect.origin.y - _panBoundsRect.size.height + _topFrameMargin) /
                                   _topFrameMargin);
     }
     if (edge == kCCLayerPanZoomFrameEdgeTopLeft || edge == kCCLayerPanZoomFrameEdgeTopRight)
     {
         speed = -(_minSpeed + (_maxSpeed - _minSpeed) *
-                                  (pos.y - _panBoundsRect.origin.y - _panBoundsRect.size.height +
-                                   _topFrameMargin) /
+                                  (pos.y - _panBoundsRect.origin.y - _panBoundsRect.size.height + _topFrameMargin) /
                                   (_topFrameMargin * sqrtf(2)));
     }
     return speed;
@@ -809,7 +810,7 @@ void STLayerPanZoom::tapWaitFinished()
 {
     AXLOG("tap enabled");
     _tapEnabled = true;
-    _tapCount = 0;
+    _tapCount   = 0;
     _touches.clear();
 }
 
@@ -834,7 +835,8 @@ void STLayerPanZoom::setupInput()
 {
     getEventDispatcher()->removeEventListenersForTarget(this);
 
-#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
+#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
     setupMouseInput();
     setupKeyboardInput();
 #endif
@@ -844,20 +846,19 @@ void STLayerPanZoom::setupInput()
 
 void STLayerPanZoom::setupMouseInput()
 {
-    auto director = Director::getInstance();
-    auto ws = director->getWinSize();
+    auto director   = Director::getInstance();
+    auto ws         = director->getWinSize();
     auto screenRect = ax::Rect(0, 0, ws.width, ws.height);
 
     auto listener0 = EventListenerMouse::create();
 
-    listener0->onMouseDown = [this, screenRect](Event *event)
-    {
+    listener0->onMouseDown = [this, screenRect](Event* event) {
         if (isInputDisabled())
         {
             return;
         }
 
-        auto mouseEvent = static_cast<EventMouse *>(event);
+        auto mouseEvent = static_cast<EventMouse*>(event);
 
         // bail if outside window
         Vec2 mouseLocation = mouseEvent->getLocationInView();
@@ -868,10 +869,10 @@ void STLayerPanZoom::setupMouseInput()
 
         if (mouseEvent->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT)
         {
-            _isMouseDown = true;
+            _isMouseDown       = true;
             Vec2 worldLocation = convertToNodeSpace(mouseLocation);
             _delegate && _delegate->layerPanZoomTouchBegan(this, worldLocation);
-            _mouseBeganPositionRightDrag = mouseLocation;
+            _mouseBeganPositionRightDrag          = mouseLocation;
             _mouseBeganPositionRightMouseLocation = mouseLocation;
         }
         else
@@ -880,14 +881,13 @@ void STLayerPanZoom::setupMouseInput()
         }
     };
 
-    listener0->onMouseMove = [this, screenRect](Event *event)
-    {
+    listener0->onMouseMove = [this, screenRect](Event* event) {
         if (isInputDisabled())
         {
             return;
         }
 
-        auto mouseEvent = static_cast<EventMouse *>(event);
+        auto mouseEvent = static_cast<EventMouse*>(event);
 
         // bail if outside window
         Vec2 mouseLocation = mouseEvent->getLocationInView();
@@ -905,7 +905,7 @@ void STLayerPanZoom::setupMouseInput()
                 return;
             }
 
-            if (_isMouseDown) // TODO: && ! isPanDisabled())
+            if (_isMouseDown)  // TODO: && ! isPanDisabled())
             {
                 Vec2 worldLocation = convertToNodeSpace(mouseLocation);
 
@@ -935,14 +935,13 @@ void STLayerPanZoom::setupMouseInput()
         }
     };
 
-    listener0->onMouseUp = [this, screenRect](Event *event)
-    {
+    listener0->onMouseUp = [this, screenRect](Event* event) {
         if (isInputDisabled())
         {
             return;
         }
 
-        auto mouseEvent = static_cast<EventMouse *>(event);
+        auto mouseEvent = static_cast<EventMouse*>(event);
 
         _isMouseDown = false;
 
@@ -972,8 +971,7 @@ void STLayerPanZoom::setupMouseInput()
         }
     };
 
-    listener0->onMouseScroll = [this](Event *event)
-    {
+    listener0->onMouseScroll = [this](Event* event) {
         if (isInputDisabled())
         {
             return;
@@ -999,7 +997,7 @@ void STLayerPanZoom::setupMouseInput()
         }
 
         // TODO: check and make sure only works in window
-        auto mouseEvent = static_cast<EventMouse *>(event);
+        auto mouseEvent      = static_cast<EventMouse*>(event);
         float scrollVelocity = mouseEvent->getScrollY();
 
         // TODO: could reset zoom wait timer
@@ -1023,7 +1021,7 @@ void STLayerPanZoom::setupMouseInput()
             auto curZoom = getScaleX();
 
             // find cur zoom?? TODO: WHY??
-            auto n = _zoomLevelsNew.size();
+            auto n             = _zoomLevelsNew.size();
             auto nextZoomIndex = 0;
             for (auto i = 0; i < n; ++i)
             {
@@ -1054,14 +1052,14 @@ void STLayerPanZoom::setupMouseInput()
                 auto newScale = _zoomLevelsNew[nextZoomIndex] * SCALE_LARGE;
                 AXLOG("scaling to %f", newScale);
 
-                float dur = 0.3f; // kZoomScaleAnimationDuration;
+                float dur = 0.3f;  // kZoomScaleAnimationDuration;
 
                 STCameraManager::get()->moveBy(Vec2::ZERO, true, newScale, dur);
 
-                _zoomIndex = nextZoomIndex;
-                _isMouseScrolling = true;
-                _zoomWaitTimer = dur * 2.f; // TODO: make into const
-                _zoomWaitTimerDampen = _zoomWaitTimer;
+                _zoomIndex               = nextZoomIndex;
+                _isMouseScrolling        = true;
+                _zoomWaitTimer           = dur * 2.f;  // TODO: make into const
+                _zoomWaitTimerDampen     = _zoomWaitTimer;
                 _lastMouseScrollVelocity = scrollVelocity;
             }
         }
@@ -1092,8 +1090,7 @@ void STLayerPanZoom::setupTouchInputInternal()
 
     // Example of using a lambda expression to implement onTouchBegan event callback function
 #warning TODO: listener1->onTouchesBegan = AX_CALLBACK_1(&STLayerPanZoom::onTouchesBegan, this);
-    listener1->onTouchesBegan = [this](const std::vector<Touch *> &pTouches, Event *)
-    {
+    listener1->onTouchesBegan = [this](const std::vector<Touch*>& pTouches, Event*) {
         AXLOG("STLayerPanZoom[onTouchesBegan] isInputDisabled = %d", isInputDisabled());
         if (isInputDisabled())
         {
@@ -1104,7 +1101,7 @@ void STLayerPanZoom::setupTouchInputInternal()
             return;
         }
 
-        for (auto &pTouch : pTouches)
+        for (auto& pTouch : pTouches)
         {
             Vec2 viewLocation = pTouch->getLocationInView();
             // AXLOG("touch view location: %s", CStrFromPoint(viewLocation));
@@ -1118,21 +1115,22 @@ void STLayerPanZoom::setupTouchInputInternal()
 
         if (_touches.size() == 1)
         {
-            _touchMoveBegan = false;
+            _touchMoveBegan       = false;
             _singleTouchTimestamp = time(nullptr);
 
-            Touch *touch = (Touch *)_touches.at(0);
-            Vec2 curPos = Director::getInstance()->convertToGL(touch->getLocationInView());
+            Touch* touch      = (Touch*)_touches.at(0);
+            Vec2 curPos       = Director::getInstance()->convertToGL(touch->getLocationInView());
             _tapBeganPosition = convertToNodeSpace(curPos);
 
             // REMOVE: this seems to be useless, method prob already restricted by platform
-#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
+#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
             auto mouseLocation = touch->getLocationInView();
             // touch is not (or already) reversed Y
-            auto ws = Director::getInstance()->getWinSize();
+            auto ws         = Director::getInstance()->getWinSize();
             mouseLocation.y = ws.height - mouseLocation.y;
 
-            _isMouseDown = true;
+            _isMouseDown        = true;
             _mouseBeganPosition = mouseLocation;
             _delegate && _delegate->layerPanZoomMouseBegan(this, mouseLocation);
 #endif
@@ -1146,8 +1144,7 @@ void STLayerPanZoom::setupTouchInputInternal()
         // AXLOG("touch count = " PRINTF_ZD "", _touches->count());
     };
 
-    listener1->onTouchesMoved = [this](const std::vector<Touch *> &, Event *)
-    {
+    listener1->onTouchesMoved = [this](const std::vector<Touch*>&, Event*) {
         if (isInputDisabled())
         {
             return;
@@ -1156,12 +1153,12 @@ void STLayerPanZoom::setupTouchInputInternal()
         if (_touches.size() >= 2)
         {
             // Get the two first touches
-            Touch *touch1 = (Touch *)_touches.at(0);
-            Touch *touch2 = (Touch *)_touches.at(1);
+            Touch* touch1 = (Touch*)_touches.at(0);
+            Touch* touch2 = (Touch*)_touches.at(1);
 
             // Get current and previous positions of the touches
-            Vec2 curPosTouch1 = touch1->getLocation();
-            Vec2 curPosTouch2 = touch2->getLocation();
+            Vec2 curPosTouch1  = touch1->getLocation();
+            Vec2 curPosTouch2  = touch2->getLocation();
             Vec2 prevPosTouch1 = touch1->getPreviousLocation();
             Vec2 prevPosTouch2 = touch2->getPreviousLocation();
 
@@ -1171,19 +1168,19 @@ void STLayerPanZoom::setupTouchInputInternal()
                 return;
             }
 
-            float curTouchDist = curPosTouch1.getDistance(curPosTouch2);
+            float curTouchDist  = curPosTouch1.getDistance(curPosTouch2);
             float prevTouchDist = prevPosTouch1.getDistance(prevPosTouch2);
 
             // Calculate new scale
             float prevScale = getScaleX();
-            float newScale = prevScale * curTouchDist / prevTouchDist;
-            newScale = clampf(newScale, _minScale, _maxScale);
+            float newScale  = prevScale * curTouchDist / prevTouchDist;
+            newScale        = clampf(newScale, _minScale, _maxScale);
 
             // If current and previous position of the multitouch's center aren't equal -> change position of the layer
             Vec2 midpointDelta = Vec2::ZERO;
 
             // Calculate current and previous positions of the layer relative the anchor point
-            Vec2 curMidpointTouch = curPosTouch1.getMidpoint(curPosTouch2);
+            Vec2 curMidpointTouch  = curPosTouch1.getMidpoint(curPosTouch2);
             Vec2 prevMidpointTouch = prevPosTouch1.getMidpoint(prevPosTouch2);
 
             //            AXLOG("pos: %s", CStrFromPoint(getPosition()));
@@ -1230,12 +1227,13 @@ void STLayerPanZoom::setupTouchInputInternal()
                 offsetFromCenter *= (-1.f / prevScale);
                 offsetFromCenter *= (1.f / newScale);
 
-                midpointDelta += offsetFromCenter; // negative since camera screen is opposite camera world coord system
-                                                   //                AXLOG("[test2]");
-                                                   //                AXLOG("screenCenter: %s", CStrFromPoint(screenCenter));
-                                                   //                AXLOG("offsetFromCenter: %s", CStrFromPoint(offsetFromCenter));
-                                                   //                AXLOG("midpointDelta: %s", CStrFromPoint(midpointDelta));
-                                                   //                AXLOG(scaleDelta);
+                midpointDelta +=
+                    offsetFromCenter;  // negative since camera screen is opposite camera world coord system
+                                       //                AXLOG("[test2]");
+                                       //                AXLOG("screenCenter: %s", CStrFromPoint(screenCenter));
+                                       //                AXLOG("offsetFromCenter: %s", CStrFromPoint(offsetFromCenter));
+                                       //                AXLOG("midpointDelta: %s", CStrFromPoint(midpointDelta));
+                                       //                AXLOG(scaleDelta);
             }
 
             // NOTE: this is move by in "world coords"
@@ -1246,10 +1244,10 @@ void STLayerPanZoom::setupTouchInputInternal()
         }
         else if (_touches.size() == 1)
         {
-            Touch *touch = (Touch *)_touches.at(0);
+            Touch* touch = (Touch*)_touches.at(0);
 
             // Get the single touch and it's previous & current position.
-            Vec2 curTouchPosition = touch->getLocation();
+            Vec2 curTouchPosition  = touch->getLocation();
             Vec2 prevTouchPosition = touch->getPreviousLocation();
 
             // Accumulate touch distance for all modes.
@@ -1260,10 +1258,11 @@ void STLayerPanZoom::setupTouchInputInternal()
             {
                 // MOVING
 
-#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
+#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
                 Vec2 mouseLocation = touch->getLocationInView();
                 // touch is not (or already) reversed Y
-                auto ws = Director::getInstance()->getWinSize();
+                auto ws         = Director::getInstance()->getWinSize();
                 mouseLocation.y = ws.height - mouseLocation.y;
 
                 //            if(! screenRect.containsPoint(mouseLocation)) { return; }
@@ -1279,12 +1278,14 @@ void STLayerPanZoom::setupTouchInputInternal()
                     //[self.delegate layerPanZoom: self
                     //   touchMoveBeganAtPosition: [self convertToNodeSpace: prevTouchPosition]];
 
-                    //                        claimed = _delegate->layerPanZoomTouchBegan(this, convertToNodeSpace(prevTouchPosition));
+                    //                        claimed = _delegate->layerPanZoomTouchBegan(this,
+                    //                        convertToNodeSpace(prevTouchPosition));
 
                     _touchMoveBegan = true;
                 }
                 //                    else {
-                //                        claimed = _delegate->layerPanZoomTouchMoved(this, convertToNodeSpace(prevTouchPosition));
+                //                        claimed = _delegate->layerPanZoomTouchMoved(this,
+                //                        convertToNodeSpace(prevTouchPosition));
                 //                    }
 
                 if (!claimed)
@@ -1304,12 +1305,11 @@ void STLayerPanZoom::setupTouchInputInternal()
     };
 
     // Process the touch end event
-    listener1->onTouchesEnded = [this](const std::vector<Touch *> &pTouches, Event *)
-    {
+    listener1->onTouchesEnded = [this](const std::vector<Touch*>& pTouches, Event*) {
         // AXLOG("[STLayerPanZoom::ccTouchesEnded] touch end");
         if (isInputDisabled())
         {
-            for (auto &pTouch : pTouches)
+            for (auto& pTouch : pTouches)
             {
                 _touches.eraseObject(pTouch);
             }
@@ -1324,7 +1324,7 @@ void STLayerPanZoom::setupTouchInputInternal()
         {
             if (_touches.size() == 1)
             {
-                Touch *touch = (Touch *)_touches.at(0);
+                Touch* touch = (Touch*)_touches.at(0);
                 _tapPosition = touch->getLocation();
 
                 // check for short circuited touch
@@ -1389,9 +1389,8 @@ void STLayerPanZoom::setupTouchInputInternal()
             //                                auto callSelectorAction = CallFunc::create([this]() {
             //                                    tapHandler();
             //                                });
-            //                                auto seq = Sequence::createWithTwoActions(delayAction, callSelectorAction);
-            //                                seq->setTag(5);
-            //                                runAction(seq);
+            //                                auto seq = Sequence::createWithTwoActions(delayAction,
+            //                                callSelectorAction); seq->setTag(5); runAction(seq);
             //                            }
             //                            else {
             //                                dinfo("touch while taphandler action still running");
@@ -1435,16 +1434,16 @@ void STLayerPanZoom::setupTouchInputInternal()
             if (multitouch)
             {
                 // Get the two first touches
-                Touch *touch1 = (Touch *)_touches.at(0);
-                Touch *touch2 = (Touch *)_touches.at(1);
+                Touch* touch1 = (Touch*)_touches.at(0);
+                Touch* touch2 = (Touch*)_touches.at(1);
 
                 // Get current and previous positions of the touches
-                auto loc1 = touch1->getLocationInView();
-                auto loc2 = touch2->getLocationInView();
-                auto prevLoc1 = touch1->getPreviousLocationInView();
-                auto prevLoc2 = touch2->getPreviousLocationInView();
-                Vec2 curPosTouch1 = Director::getInstance()->convertToGL(loc1);
-                Vec2 curPosTouch2 = Director::getInstance()->convertToGL(loc2);
+                auto loc1          = touch1->getLocationInView();
+                auto loc2          = touch2->getLocationInView();
+                auto prevLoc1      = touch1->getPreviousLocationInView();
+                auto prevLoc2      = touch2->getPreviousLocationInView();
+                Vec2 curPosTouch1  = Director::getInstance()->convertToGL(loc1);
+                Vec2 curPosTouch2  = Director::getInstance()->convertToGL(loc2);
                 Vec2 prevPosTouch1 = Director::getInstance()->convertToGL(prevLoc1);
                 Vec2 prevPosTouch2 = Director::getInstance()->convertToGL(prevLoc2);
 
@@ -1454,12 +1453,12 @@ void STLayerPanZoom::setupTouchInputInternal()
                     return;
                 }
 
-                float curTouchDist = curPosTouch1.getDistance(curPosTouch2);
+                float curTouchDist  = curPosTouch1.getDistance(curPosTouch2);
                 float prevTouchDist = prevPosTouch1.getDistance(prevPosTouch2);
 
                 // Calculate new scale
                 float prevScale = getScaleX();
-                float newScale = prevScale;
+                float newScale  = prevScale;
 
                 if (prevTouchDist > 0.1f)
                 {
@@ -1493,7 +1492,7 @@ void STLayerPanZoom::setupTouchInputInternal()
                         newScale = 1.f * retinaScale;
                     }
                     else
-                    { // if(newScale < 2.5f * retinaScale) {
+                    {  // if(newScale < 2.5f * retinaScale) {
                         newScale = 2 * retinaScale;
                     }
                     //                    else { //if(newScale < 3.5f * retinaScale) {
@@ -1511,18 +1510,24 @@ void STLayerPanZoom::setupTouchInputInternal()
                             auto wsHalf = Director::getInstance()->getWinSize() * .5f;
                             Vec2 screenCenter{wsHalf.width, wsHalf.height};
                             Vec2 offsetFromCenter = curMidpointTouch - screenCenter;
-                            float scaleDelta = (prevScale - newScale) / newScale; // ??? why ??? ... maybe because needs to also be in world coord???
+                            float scaleDelta =
+                                (prevScale - newScale) /
+                                newScale;  // ??? why ??? ... maybe because needs to also be in world coord???
                             offsetFromCenter *= scaleDelta;
-                            midpointDelta = -1.f / prevScale * offsetFromCenter * 1.f; // negative since camera screen is opposite camera world coord system
-                                                                                       //                            AXLOG("[test2]");
-                                                                                       //                            AXLOG("screenCenter: %s", CStrFromPoint(screenCenter));
-                                                                                       //                            AXLOG("offsetFromCenter: %s", CStrFromPoint(offsetFromCenter));
-                                                                                       //                            AXLOG("midpointDelta: %s", CStrFromPoint(midpointDelta));
-                                                                                       //                            AXLOGFloat(scaleDelta);
+                            midpointDelta = -1.f / prevScale * offsetFromCenter *
+                                            1.f;  // negative since camera screen is opposite camera world coord system
+                                                  //                            AXLOG("[test2]");
+                                                  //                            AXLOG("screenCenter: %s",
+                                                  //                            CStrFromPoint(screenCenter));
+                                                  //                            AXLOG("offsetFromCenter: %s",
+                                                  //                            CStrFromPoint(offsetFromCenter));
+                                                  //                            AXLOG("midpointDelta: %s",
+                                                  //                            CStrFromPoint(midpointDelta));
+                                                  //                            AXLOGFloat(scaleDelta);
                         }
 
                         bool animated = true;
-                        float dur = kZoomScaleAnimationDuration;
+                        float dur     = kZoomScaleAnimationDuration;
                         // AXLOG("newScale = %f, retinaScale = %f", newScale);
                         STCameraManager::get()->moveBy(midpointDelta, animated, newScale, dur);
                     }
@@ -1533,14 +1538,15 @@ void STLayerPanZoom::setupTouchInputInternal()
             }
             else if (_touches.size() == 1)
             {
-#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
+#if ((AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX))
                 // Get the two first touches
-                Touch *touch = (Touch *)_touches.at(0);
+                Touch* touch = (Touch*)_touches.at(0);
 
                 // handle end for moved
                 Vec2 mouseLocation = touch->getLocationInView();
                 // touch is not (or already) reversed Y
-                auto ws = Director::getInstance()->getWinSize();
+                auto ws         = Director::getInstance()->getWinSize();
                 mouseLocation.y = ws.height - mouseLocation.y;
 
                 // TODO: remove or use for making sure this event is valid
@@ -1568,7 +1574,7 @@ void STLayerPanZoom::setupTouchInputInternal()
         }
 
         // remove touches
-        for (auto &pTouch : pTouches)
+        for (auto& pTouch : pTouches)
         {
             _touches.eraseObject(pTouch);
         }
@@ -1580,9 +1586,8 @@ void STLayerPanZoom::setupTouchInputInternal()
     };
 
 #warning TODO: listener1->onTouchesCancelled = std::bind();
-    listener1->onTouchesCancelled = [this](const std::vector<Touch *> &pTouches, Event *)
-    {
-        for (auto &pTouch : pTouches)
+    listener1->onTouchesCancelled = [this](const std::vector<Touch*>& pTouches, Event*) {
+        for (auto& pTouch : pTouches)
         {
             _touches.eraseObject(pTouch);
         }
@@ -1612,22 +1617,20 @@ void STLayerPanZoom::setupKeyboardInput()
 
     if (_cameraInputsArrows.empty())
     {
-        _cameraInputsArrows[EventKeyboard::KeyCode::KEY_LEFT_ARROW] = Vec2(-keyInputCameraSpeed, 0);
+        _cameraInputsArrows[EventKeyboard::KeyCode::KEY_LEFT_ARROW]  = Vec2(-keyInputCameraSpeed, 0);
         _cameraInputsArrows[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] = Vec2(keyInputCameraSpeed, 0);
-        _cameraInputsArrows[EventKeyboard::KeyCode::KEY_UP_ARROW] = Vec2(0, keyInputCameraSpeed);
-        _cameraInputsArrows[EventKeyboard::KeyCode::KEY_DOWN_ARROW] = Vec2(0, -keyInputCameraSpeed);
+        _cameraInputsArrows[EventKeyboard::KeyCode::KEY_UP_ARROW]    = Vec2(0, keyInputCameraSpeed);
+        _cameraInputsArrows[EventKeyboard::KeyCode::KEY_DOWN_ARROW]  = Vec2(0, -keyInputCameraSpeed);
     }
 
     auto listener = EventListenerKeyboard::create();
 
-    listener->onKeyPressed = [this](ax::EventKeyboard::KeyCode keyCode, Event *)
-    {
+    listener->onKeyPressed = [this](ax::EventKeyboard::KeyCode keyCode, Event*) {
         // dinfo2("PANZOOM :: key pressed: %d", keyCode);
         _keyState[keyCode] = true;
     };
 
-    listener->onKeyReleased = [this](ax::EventKeyboard::KeyCode keyCode, Event *)
-    {
+    listener->onKeyReleased = [this](ax::EventKeyboard::KeyCode keyCode, Event*) {
         // dinfo2("PANZOOM :: key released: %d", keyCode);
         _keyState[keyCode] = false;
 
@@ -1641,7 +1644,7 @@ void STLayerPanZoom::setupKeyboardInput()
             auto curZoom = getScaleX();
 
             // TODO: find cur zoom ... WHY?
-            auto n = _zoomLevelsNew.size();
+            auto n               = _zoomLevelsNew.size();
             size_t nextZoomIndex = 0;
             for (auto i = 0; i < n; ++i)
             {
@@ -1681,7 +1684,8 @@ void STLayerPanZoom::setupKeyboardInput()
     };
 
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-    //    Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, kFixedPriorityPanZoomKeyboard);
+    //    Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener,
+    //    kFixedPriorityPanZoomKeyboard);
 }
 
 /////////////////////////////////////////////////////
@@ -1721,16 +1725,15 @@ void STLayerPanZoom::updateCameraAction(float dt)
 
 #if AX_ENABLE_STACKABLE_ACTIONS
         // easeing - ease in
-        float updateDt = MAX(0, // needed for rewind. elapsed could be negative
-                             MIN(1, _elapsed /
-                                        MAX(_targetTime, FLT_EPSILON) // division by 0
+        float updateDt = MAX(0,  // needed for rewind. elapsed could be negative
+                             MIN(1, _elapsed / MAX(_targetTime, FLT_EPSILON)  // division by 0
                                  ));
-        auto time = tweenfunc::easeIn(updateDt, _easeRate);
+        auto time      = tweenfunc::easeIn(updateDt, _easeRate);
 
         //            //_targetPos
         Vec2 currentPos = this->getPosition();
 
-        Vec2 diff = currentPos - _previousPosition;
+        Vec2 diff      = currentPos - _previousPosition;
         _startPosition = _startPosition + diff;
 
         Vec2 newPos = _startPosition + (_deltaPosition * time);
@@ -1747,8 +1750,8 @@ void STLayerPanZoom::updateCameraAction(float dt)
     break;
     case 2:
     {
-        _stage = -1;
-        _elapsed = 0;
+        _stage      = -1;
+        _elapsed    = 0;
         _targetTime = 0;
         if (_targetCallback)
         {
@@ -1763,23 +1766,28 @@ void STLayerPanZoom::updateCameraAction(float dt)
     }
 }
 
-void STLayerPanZoom::runCameraAction(float delay, float duration, const Vec2 &newPos, float newScale, float easingRate, const std::function<void()> &callback)
+void STLayerPanZoom::runCameraAction(float delay,
+                                     float duration,
+                                     const Vec2& newPos,
+                                     float newScale,
+                                     float easingRate,
+                                     const std::function<void()>& callback)
 {
     _targetCallback = callback;
 
-    _stage = 0;
-    _elapsed = 0;
+    _stage      = 0;
+    _elapsed    = 0;
     _targetTime = duration;
 
     _easeRate = easingRate;
 
     // moveto
-    _startPosition = this->getPosition();
+    _startPosition    = this->getPosition();
     _previousPosition = _startPosition;
-    _previousScale = this->getScaleX();
+    _previousScale    = this->getScaleX();
 
-    _targetDelay = delay;
-    _targetScale = newScale;
+    _targetDelay    = delay;
+    _targetScale    = newScale;
     _targetPosition = newPos;
 
     _deltaPosition = _targetPosition - _previousPosition;

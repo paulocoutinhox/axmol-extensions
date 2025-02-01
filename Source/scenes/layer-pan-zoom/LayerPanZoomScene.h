@@ -14,13 +14,13 @@ public:
     void update(float delta) override;
 
 private:
-    Layer *mapLayer;
-    Layer *playerLayer;
-    Layer *uiLayer;
+    Layer* mapLayer;
+    Layer* playerLayer;
+    Layer* uiLayer;
 
-    STLayerPanZoom *panZoomLayer;
+    STLayerPanZoom* panZoomLayer;
 
-    Sprite *player;
+    Sprite* player;
 
     void setupUI();
     void setupMap();
@@ -29,4 +29,4 @@ private:
     void setupCustom();
 };
 
-#endif // __LAYER_PAN_ZOOM_SCENE_H__
+#endif  // __LAYER_PAN_ZOOM_SCENE_H__

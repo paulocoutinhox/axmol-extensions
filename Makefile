@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 
 ROOT_DIR=${PWD}
-PROJ=axmol-extensions
+PROJ=axmol-ex
 GITHUB_REPO=paulocoutinhox/axmol-extensions
 
 help:
@@ -47,7 +47,7 @@ build-wasm:
 	rm -rf build_wasm/
 	axmol build -p wasm
 	cd build_wasm && make
-	cp build_wasm/bin/axmol-extensions/axmol-extensions.html build_wasm/bin/axmol-extensions/index.html
+	cp build_wasm/bin/axmol-ex/axmol-ex.html build_wasm/bin/axmol-ex/index.html
 
 deploy-ios:
 	rm -rf build_ios_arm64/
@@ -86,7 +86,7 @@ deploy-android:
 	echo "The bundle is here: proj.android/app/build/outputs/bundle/release/${PROJ}-release.aab"
 
 deploy-wasm:
-	cd build_wasm/bin/axmol-extensions && \
+	cd build_wasm/bin/axmol-ex && \
 	echo "/*\n  Cross-Origin-Embedder-Policy: require-corp\n  Cross-Origin-Opener-Policy: same-origin" > _headers && \
 	rm -rf .git && \
 	git init . && \
@@ -95,3 +95,6 @@ deploy-wasm:
 	git commit -am "published new version" && \
 	git push "git@github.com:$(GITHUB_REPO).git" gh-pages --force && \
 	rm -rf .git
+
+start-wasm:
+	cd build_wasm/bin/${PROJ} && python3 ../../../server.py

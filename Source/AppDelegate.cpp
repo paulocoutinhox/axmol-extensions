@@ -4,24 +4,22 @@
 #define USE_AUDIO_ENGINE 1
 
 #if USE_AUDIO_ENGINE
-#include "audio/AudioEngine.h"
+#    include "audio/AudioEngine.h"
 #endif
 
-static Size designResolutionSize = Size(1280, 720);
-static Size smallResolutionSize = Size(480, 320);
-static Size mediumResolutionSize = Size(1024, 768);
-static Size largeResolutionSize = Size(2048, 1536);
+static ax::Size designResolutionSize = ax::Size(1280, 720);
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
     // initialize director
     auto director = Director::getInstance();
-    auto glView = director->getGLView();
-
+    auto glView   = director->getGLView();
     if (!glView)
     {
-#if (AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX)
-        glView = GLViewImpl::createWithRect("Axmol Extensions", Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+#if (AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
+    (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX)
+        glView = GLViewImpl::createWithRect("Axmol Extensions",
+                                            ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
         glView = GLViewImpl::create("Axmol Extensions");
 #endif
@@ -35,24 +33,8 @@ bool AppDelegate::applicationDidFinishLaunching()
     director->setAnimationInterval(1.0f / 60);
 
     // set the design resolution
-    glView->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
-    auto frameSize = glView->getFrameSize();
-
-    // if the frame's height is larger than the height of medium size.
-    if (frameSize.height > mediumResolutionSize.height)
-    {
-        director->setContentScaleFactor(MIN(largeResolutionSize.height / designResolutionSize.height, largeResolutionSize.width / designResolutionSize.width));
-    }
-    // if the frame's height is larger than the height of small size.
-    else if (frameSize.height > smallResolutionSize.height)
-    {
-        director->setContentScaleFactor(MIN(mediumResolutionSize.height / designResolutionSize.height, mediumResolutionSize.width / designResolutionSize.width));
-    }
-    // if the frame's height is smaller than the height of medium size.
-    else
-    {
-        director->setContentScaleFactor(MIN(smallResolutionSize.height / designResolutionSize.height, smallResolutionSize.width / designResolutionSize.width));
-    }
+    glView->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,
+                                    ResolutionPolicy::SHOW_ALL);
 
     // preload
     preload();

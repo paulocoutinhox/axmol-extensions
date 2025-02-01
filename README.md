@@ -10,6 +10,7 @@ https://axext.netlify.app/
 - Splash
 - Layer Pan Zoom
 - Infinite Scroll
+- Simple CheckBox
 
 ## Code of Conduct
 

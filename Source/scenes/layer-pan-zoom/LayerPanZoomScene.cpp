@@ -110,7 +110,8 @@ void LayerPanZoomScene::setupMap()
 
                 if (tileSprite)
                 {
-                    auto physicsBody = PhysicsBody::createBox(tileSprite->getContentSize(), PhysicsMaterial(1.0f, 0.1f, 0.0f));
+                    auto physicsBody =
+                        PhysicsBody::createBox(tileSprite->getContentSize(), PhysicsMaterial(1.0f, 0.1f, 0.0f));
                     physicsBody->setDynamic(false);
                     physicsBody->setGravityEnable(false);
                     physicsBody->setRotationEnable(false);
@@ -146,10 +147,12 @@ void LayerPanZoomScene::setupUI()
 
     // back button
     auto backButton = ui::Button::create("ButtonBack.png", "ButtonBack.png");
-    backButton->setPosition(Vec2(_director->getWinSize().width - backButton->getContentSize().width / 2 - backButton->getContentSize().width / 2, backButton->getContentSize().height / 2 + backButton->getContentSize().height / 2));
+    backButton->setPosition(Vec2(
+        _director->getWinSize().width - backButton->getContentSize().width / 2 - backButton->getContentSize().width / 2,
+        backButton->getContentSize().height / 2 + backButton->getContentSize().height / 2));
 
     // clang-format off
-    backButton->addTouchEventListener([=](Ref *sender, ui::Widget::TouchEventType type) {
+    backButton->addTouchEventListener([=](Object *sender, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::ENDED)
         {
             auto scene = utils::createInstance<MainScene>();

@@ -14,41 +14,35 @@ public:
     Rect safeArea;
     Vec2 safeOrigin;
 
-    static Global &getInstance()
+    static Global& getInstance()
     {
         static Global instance;
         return instance;
     }
 
-    float scaleFactor(const float &value)
-    {
-        return value * Director::getInstance()->getContentScaleFactor();
-    }
+    float scaleFactor(const float& value) { return value * Director::getInstance()->getContentScaleFactor(); }
 
-    int scaleFactor(const int &value)
-    {
-        return value * Director::getInstance()->getContentScaleFactor();
-    }
+    int scaleFactor(const int& value) { return value * Director::getInstance()->getContentScaleFactor(); }
 
 private:
     Global()
     {
         // size and origin
-        winSize = Director::getInstance()->getWinSize();
-        visibleSize = Director::getInstance()->getVisibleSize();
+        winSize       = Director::getInstance()->getWinSize();
+        visibleSize   = Director::getInstance()->getVisibleSize();
         visibleOrigin = Director::getInstance()->getVisibleOrigin();
-        origin = Director::getInstance()->getVisibleOrigin();
-        safeArea = Director::getInstance()->getSafeAreaRect();
-        safeOrigin = safeArea.origin;
+        origin        = Director::getInstance()->getVisibleOrigin();
+        safeArea      = Director::getInstance()->getSafeAreaRect();
+        safeOrigin    = safeArea.origin;
 
 #if !defined(AX_TARGET_OS_TVOS)
         visibleSize = safeArea.size;
-        origin = safeOrigin;
+        origin      = safeOrigin;
 #endif
     }
 
-    Global(Global const &) = delete;
-    void operator=(Global const &) = delete;
+    Global(Global const&)         = delete;
+    void operator=(Global const&) = delete;
 };
 
-#endif // __GLOBAL_H__
+#endif  // __GLOBAL_H__

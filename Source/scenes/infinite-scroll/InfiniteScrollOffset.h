@@ -20,12 +20,12 @@ public:
     AX_SYNTHESIZE(Point, relVelocity, RelVelocity);
     AX_SYNTHESIZE(Point, ratio, Ratio);
     AX_SYNTHESIZE(Point, buffer, Buffer);
-    AX_SYNTHESIZE(Node *, theChild, TheChild);
+    AX_SYNTHESIZE(Node*, theChild, TheChild);
 
-    static InfiniteScrollOffset *scrollWithNode(Node *node, Point r, Point p, Point s);
-    static InfiniteScrollOffset *scrollWithNode(Node *node, Point r, Point p, Point s, Point v);
-    InfiniteScrollOffset *initWithNode(Node *node, Point r, Point p, Point s, Point v);
-    InfiniteScrollOffset *initWithNode(Node *node, Point r, Point p, Point s);
+    static InfiniteScrollOffset* scrollWithNode(Node* node, Point r, Point p, Point s);
+    static InfiniteScrollOffset* scrollWithNode(Node* node, Point r, Point p, Point s, Point v);
+    InfiniteScrollOffset* initWithNode(Node* node, Point r, Point p, Point s, Point v);
+    InfiniteScrollOffset* initWithNode(Node* node, Point r, Point p, Point s);
 };
 
 #endif
