@@ -1,21 +1,35 @@
-import os
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-from functools import partial
+# Based on:
+# https://stackoverflow.com/a/21957017
+# https://gist.github.com/HaiyangXu/ec88cbdce3cdbac7b8d5
+
+import socketserver
+import sys
+from http.server import SimpleHTTPRequestHandler
 
 
-class CORSRequestHandler(SimpleHTTPRequestHandler):
+class Handler(SimpleHTTPRequestHandler):
+    extensions_map = {
+        "": "application/octet-stream",
+        ".css": "text/css",
+        ".html": "text/html",
+        ".jpg": "image/jpg",
+        ".js": "application/x-javascript",
+        ".json": "application/json",
+        ".manifest": "text/cache-manifest",
+        ".png": "image/png",
+        ".wasm": "application/wasm",
+        ".xml": "application/xml",
+    }
+
     def end_headers(self):
-        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
-        super().end_headers()
+        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        SimpleHTTPRequestHandler.end_headers(self)
 
 
 if __name__ == "__main__":
-    handler_class = partial(
-        CORSRequestHandler,
-        directory=os.path.join("build_wasm", "bin", "axmol-ex"),
-    )
-    server_address = ("", 8000)
-    httpd = HTTPServer(server_address, handler_class)
-    print("Serving at http://localhost:8000")
-    httpd.serve_forever()
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    with socketserver.TCPServer(("localhost", port), Handler) as httpd:
+        print("Serving on port", port)
+        httpd.serve_forever()

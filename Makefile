@@ -3,7 +3,7 @@
 
 ROOT_DIR=${PWD}
 PROJ=axmol-ex
-GITHUB_REPO=paulocoutinhox/axmol-ex
+GITHUB_REPO=paulocoutinhox/axmol-extensions
 
 help:
 	@echo "Type: make [rule]. Available options are:"
@@ -95,3 +95,6 @@ deploy-wasm:
 	git commit -am "published new version" && \
 	git push "git@github.com:$(GITHUB_REPO).git" gh-pages --force && \
 	rm -rf .git
+
+start-wasm:
+	cd build_wasm/bin/${PROJ} && python3 ../../../server.py
