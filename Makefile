@@ -29,6 +29,7 @@ format:
 clean:
 	rm -rf build_*
 	rm -rf proj.android/app/build
+	rm -rf proj.android/app/.cxx
 	find . -name ".DS_Store" -delete
 
 build-ios:
