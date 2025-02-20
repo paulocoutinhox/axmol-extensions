@@ -46,9 +46,9 @@ build-macos:
 
 build-wasm:
 	rm -rf build_wasm/
-	axmol build -p wasm
+	axmol build -p wasm -t ${PROJ}
 	cd build_wasm && make
-	cp build_wasm/bin/axmol-ex/axmol-ex.html build_wasm/bin/axmol-ex/index.html
+	cp build_wasm/bin/${PROJ}/${PROJ}.html build_wasm/bin/${PROJ}/index.html
 
 deploy-ios:
 	rm -rf build_ios_arm64/
@@ -87,7 +87,7 @@ deploy-android:
 	echo "The bundle is here: proj.android/app/build/outputs/bundle/release/${PROJ}-release.aab"
 
 deploy-wasm:
-	cd build_wasm/bin/axmol-ex && \
+	cd build_wasm/bin/${PROJ} && \
 	echo "/*\n  Cross-Origin-Embedder-Policy: require-corp\n  Cross-Origin-Opener-Policy: same-origin" > _headers && \
 	rm -rf .git && \
 	git init . && \
