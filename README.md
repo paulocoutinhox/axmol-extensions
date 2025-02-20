@@ -47,4 +47,4 @@ Server:
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2023, Paulo Coutinho
+Copyright (c) 2025, Paulo Coutinho
